@@ -4,7 +4,7 @@ STATICCHECK ?= $(GO) run honnef.co/go/tools/cmd/staticcheck@v0.7.0-0.dev.0.20261
 # The race detector needs cgo. CI (Linux) has it; a Windows laptop without a C compiler does not.
 RACE := $(if $(filter 1,$(shell $(GO) env CGO_ENABLED)),-race,)
 
-.PHONY: setup build test lint guard acceptance
+.PHONY: setup build test lint guard acceptance race
 
 setup:
 	$(GO) mod download
@@ -24,3 +24,7 @@ guard:
 
 acceptance:
 	$(GO) run ./scripts/acceptance
+
+# The race detector needs cgo. Where the host has no C compiler, run it in Linux via Docker.
+race:
+	docker run --rm -v "$(CURDIR):/src" -w /src golang:1.26 go test -race -count=1 ./...
