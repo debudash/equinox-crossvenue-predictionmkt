@@ -32,8 +32,9 @@ func TestStubReportsOwner(t *testing.T) {
 
 func TestRegisteredCommandReplacesStub(t *testing.T) {
 	ran := false
+	real := registered["serve"]
 	register(&cobra.Command{Use: "serve", RunE: func(*cobra.Command, []string) error { ran = true; return nil }})
-	t.Cleanup(func() { delete(registered, "serve") })
+	t.Cleanup(func() { registered["serve"] = real })
 	root := newRoot()
 	root.SetArgs([]string{"serve"})
 	if err := root.Execute(); err != nil || !ran {
