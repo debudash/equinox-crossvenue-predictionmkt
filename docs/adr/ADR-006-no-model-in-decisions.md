@@ -3,7 +3,7 @@
 Status: Accepted. Requirements: NFR-9, NFR-1, FR-3. Build reference: locked choice 4.
 
 ## Context
-AI is optional in the PRD. A language model or similarity score in the decision path would be non-deterministic and hard to validate. Financial firms are expected to document, validate and monitor any model used in decisions [SR 11-7, model risk], which is a heavy burden for a feasibility prototype and unnecessary when exact rules suffice.
+AI is optional in the PRD. A language model or similarity score in the decision path would be non-deterministic and hard to validate. Financial firms are expected to document, validate and monitor any model used in decisions [SR 26-2, model risk], which is a heavy burden for a feasibility prototype and unnecessary when exact rules suffice.
 
 ## Decision
 - No language model, embedding or similarity score in the matcher or router.
@@ -19,4 +19,4 @@ AI is optional in the PRD. A language model or similarity score in the decision 
 - Recall depends on hand-written fetcher rules. A future version could use a model offline to propose vocabulary entries for human approval, without entering the decision path.
 
 ## Sources
-[SR 11-7, model risk]
+[SR 26-2, model risk]

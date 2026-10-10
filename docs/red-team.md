@@ -30,6 +30,6 @@ Adversarial and failure cases beyond the 20 required tests. Each has a test name
 | R-24 | New cycle completes while a reader is on page 2 | Load more continues on the reader's cycle; banner offers reload | W6 |
 | R-25 | Steady price for 15 minutes | Still fresh, because each poll saves a record | W2 |
 | R-26 | prices_every set to 15m with a 10m age limit | watch refuses to start, naming both values | W11 |
-| R-29 | watch stopped for an hour | Feed keeps the last completed cycle; sidebar shows watch stopped and last cycle time; prices shown age past 10 minutes and new routes would refuse them | W10 |
 | R-27 | Venue returns rate-limit responses | Backoff applied and logged; other venue continues | TestRT_R27 |
+| R-29 | watch stopped for an hour | Feed keeps the last completed cycle; sidebar shows watch stopped and last cycle time; prices shown age past 10 minutes and new routes would refuse them | W10 |
 | R-28 | CLI route run while watch is running | Refused with a reason; nothing written | W7 |

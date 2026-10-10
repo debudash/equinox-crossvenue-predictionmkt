@@ -1,5 +1,5 @@
 // Command equinox is the CLI entrypoint. Each subcommand lives in its own file
-// (fetch.go, match.go, route.go, serve.go, rebuild.go, watch.go) and registers
+// (fetch.go, match.go, route.go, serve.go, rebuild.go, watch.go, unlock.go) and registers
 // itself from init() with register. Any command not yet registered gets a stub
 // that exits with "not implemented", so this file never needs editing when a
 // command is added.
