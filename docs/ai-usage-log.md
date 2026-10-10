@@ -12,3 +12,4 @@ The product uses no AI in matching or routing (ADR-006). This log covers develop
 | 2026-10-09 | Design | Claude | Proposed scheduled refresh and cache design; drafted amendments A1 to A5 | Approved scheduled approach and in-memory feed |
 | 2026-10-09 | Design | Claude | Proposed defaults for watch sides, process split and intervals; rebuilt wireframes | Accepted defaults |
 | 2026-10-09 | Research | Claude with web search | Confirmed Polymarket US public market data API and Fed coverage; flagged decision-bucket matching risk | Chose Polymarket US; approved Wave 1 gate |
+| 2026-10-09 | Build T-00 | Claude Code, claude-opus-5-5 | Scaffolded module, Makefile, guard, acceptance runner, CLI stubs, CI file | Review pending at Wave 0 boundary |

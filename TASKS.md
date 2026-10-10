@@ -4,7 +4,7 @@ Status: todo | in-progress | in-review | blocked | merged. Updated after every s
 
 | ID | Title | Wave | Required tests | Harness / agent | Branch | PR | Status | Blocker |
 |---|---|---|---|---|---|---|---|---|
-| T-00 | Scaffold, CI, guard, acceptance runner | 0 | runner for 1-20 | Copilot SDK in VS Code | | | in-progress | |
+| T-00 | Scaffold, CI, guard, acceptance runner | 0 | runner for 1-20 | Claude Code (Opus 5.5) | t-00-scaffold | !1 | in-review | owner merge |
 | T-01 | Card types, vocab, config, SQLite store | 0 | supports 17 | Claude Code | | | todo | |
 | T-02 | Fixtures and test kit | 0 | supports all | Claude Code | | | todo | |
 | T-10 | Kalshi fetcher | 1 | 17, 20 (fetch side) | AO worker | | | todo | |
