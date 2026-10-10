@@ -257,3 +257,36 @@ func (r *SubjectCounts) ForCycle(ctx context.Context, cycleID int64) ([]SubjectC
 	}
 	return out, rows.Err()
 }
+
+// LatestPerVenue returns each venue's newest finished fetch run in a completed
+// cycle, and its newest successful one, for status displays.
+func (r *FetchRuns) LatestPerVenue(ctx context.Context) (latest, lastOK map[string]FetchRun, err error) {
+	latest, lastOK = map[string]FetchRun{}, map[string]FetchRun{}
+	rows, err := r.s.q.QueryContext(ctx,
+		`SELECT id, cycle_id, venue, started_at, finished_at, status, saved_count, skipped_count, error
+		 FROM fetch_runs WHERE status != 'running'
+		 AND cycle_id IN (SELECT id FROM cycles WHERE status = 'completed') ORDER BY id`)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var f FetchRun
+		var started, finished, errText sql.NullString
+		if err := rows.Scan(&f.ID, &f.CycleID, &f.Venue, &started, &finished, &f.Status, &f.Saved, &f.Skipped, &errText); err != nil {
+			return nil, nil, err
+		}
+		if f.StartedAt, err = parseTS(started); err != nil {
+			return nil, nil, err
+		}
+		if f.FinishedAt, err = parseTS(finished); err != nil {
+			return nil, nil, err
+		}
+		f.Error = errText.String
+		latest[f.Venue] = f
+		if f.Status == RunOK {
+			lastOK[f.Venue] = f
+		}
+	}
+	return latest, lastOK, rows.Err()
+}

@@ -1,110 +1,156 @@
+{{define "style"}}<style>
+body{margin:0;background:#F2F4F6;color:#17202B;font-family:'Public Sans','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:22px}
+a{color:#1F5FAD}a:hover{color:#163F73}
+header{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between;padding:14px 32px;background:#FFFFFF;border-bottom:1px solid #D3D9E0}
+.brand{color:#17202B;font-weight:700;font-size:18px;text-decoration:none}
+.card{background:#FFFFFF;border:1px solid #D3D9E0;border-radius:8px}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;box-sizing:border-box}
+.k{background:#17202B;color:#FFFFFF}
+.pm{border:1px solid #17202B;color:#17202B}
+.x{background:#E8F0FA;color:#1F5FAD}
+.muted{color:#5A6573}
+.small{font-size:13px}
+.row{display:flex;gap:16px;padding:16px 20px;border-top:1px solid #E3E7EC}
+.row:first-child{border-top:0}
+.score{flex:0 0 64px;text-align:center;font-size:12px;line-height:16px;color:#5A6573}
+.score b{display:block;font-size:15px;line-height:20px;color:#17202B}
+.title{font-size:17px;line-height:24px;font-weight:600;color:#17202B;text-decoration:none}
+.title:hover{color:#1F5FAD}
+.tabs{display:flex;gap:4px;padding:4px;background:#F2F4F6;border-radius:8px}
+.tab{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:6px;color:#17202B;text-decoration:none;font-weight:400}
+.tab[aria-current]{background:#FFFFFF;box-shadow:0 1px 2px rgba(23,32,43,0.12);font-weight:600}
+.sel{font:inherit;min-height:40px;padding:0 8px;border:1px solid #9AA6B2;border-radius:6px;background:#FFFFFF;color:#17202B}
+.btn{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:6px;font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn.primary{background:#1F5FAD;color:#FFFFFF;border:0}
+.btn.plain{background:#FFFFFF;border:1px solid #9AA6B2;color:#17202B;min-height:44px;padding:0 24px}
+.banner{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:10px 12px 10px 16px;background:#E8F0FA;border-radius:8px}
+dl{margin:0}dd{margin:0}dt{color:#5A6573}
+.status{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;font-size:14px;line-height:20px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.warn{color:#9A4A08}
+.mkt{padding:20px;display:flex;flex-direction:column;gap:12px}
+.head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.mt{font-size:16px;line-height:22px;font-weight:600}
+.prices{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.px{display:inline-flex;gap:6px;align-items:baseline;padding:6px 12px;border:1px solid #D3D9E0;border-radius:6px;font-size:14px}
+.px b{font-weight:600}
+.bot{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 12px;padding:12px 16px;background:#F7F8FA;border-radius:6px;border-left:3px solid #1F5FAD;font-size:14px;line-height:20px}
+.bot.refused{border-left-color:#C2620F}
+.bh{grid-column:1 / -1;font-size:13px;color:#5A6573}
+.lab{color:#5A6573}
+.more{grid-column:1 / -1}
+code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;padding:1px 6px;border-radius:4px;background:#E9EDF1;color:#17202B}
+code.no{background:#FDF3E8;color:#9A4A08}
+.fields{margin:10px 0 0;display:grid;grid-template-columns:140px minmax(0,1fr);gap:6px 16px;font-size:14px;line-height:20px}
+@media (max-width:640px){header{padding:12px 16px}.row{padding:12px}.score{flex-basis:48px}}
+</style>{{end}}
+
 {{define "head"}}<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Equinox feed</title>
-<style>
-body{margin:0;background:#f2f4f6;color:#17202b;font:15px/22px system-ui,sans-serif}
-a{color:#1f5fad}
-header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:12px 24px;background:#fff;border-bottom:1px solid #d3d9e0}
-main{max-width:1180px;margin:0 auto;padding:16px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
-.col{flex:999 1 600px;min-width:0;display:flex;flex-direction:column;gap:12px}
-aside{flex:1 1 260px;min-width:0}
-.card{background:#fff;border:1px solid #d3d9e0;border-radius:8px;padding:12px 16px}
-.muted{color:#5a6573;font-size:13px}
-.pill{display:inline-block;padding:0 8px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid #17202b}
-.x{background:#e8f0fa;color:#1f5fad;border-color:#e8f0fa}
-.banner{background:#e8f0fa}
-.post{display:flex;gap:12px}
-.score{flex:0 0 64px;text-align:center;font-size:12px;color:#5a6573}
-.score b{display:block;font-size:15px;color:#17202b}
-.on{font-weight:700;text-decoration:none;color:#17202b}
-.bot{background:#f7f8fa;border-left:3px solid #1f5fad;padding:8px 12px;font-size:14px}
-.bot.refused{border-left-color:#c2620f}
-code{font-family:ui-monospace,monospace;font-size:12px;background:#e9edf1;padding:1px 5px;border-radius:4px}
-dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0}dd{margin:0}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+{{template "style"}}
 </head>
 <body>
-<header><a href="/" class="on">Equinox</a><span class="muted">Read only · cycle {{.Snap.Cycle}} · completed {{stampOf .Snap.CompletedAt}}</span></header>
-<main>
-<div class="col">
-{{if .Banner}}<div class="card banner" role="status">New data saved at {{stampOf .Latest.CompletedAt}}. <a href="{{.Reload}}">Reload</a>.</div>{{end}}
-{{if .Note}}<div class="card banner" role="status">{{.Note}}</div>{{end}}
+<header><a href="/" class="brand">Equinox</a><span class="muted" style="font-size:14px">Read only · cycle {{.Snap.Cycle}} · completed {{stampOf .Snap.CompletedAt}}</span></header>
 {{end}}
 
-{{define "foot"}}
-</div>
-<aside class="card">
-<h2 style="margin:0 0 8px;font-size:16px">Status</h2>
-<dl>
-<dt class="muted">Last completed cycle</dt><dd>{{.Latest.Cycle}} ({{.Latest.Kind}}) at {{stampOf .Latest.CompletedAt}}</dd>
-<dt class="muted">This page reads</dt><dd>cycle {{.Snap.Cycle}}</dd>
-{{range .Counts}}<dt class="muted">{{.Venue}}</dt><dd>{{.N}} markets saved</dd>
+{{define "banner"}}{{if .Banner}}<div class="banner" role="status"><span>New data saved at {{stampOf .Latest.CompletedAt}}.</span> <a href="{{.Reload}}" class="btn primary">Reload</a></div>{{end}}
+{{if .Note}}<div class="banner" role="status"><span>{{.Note}}</span></div>{{end}}{{end}}
+
+{{define "flair"}}<span class="pill {{if eq .Venue .Reference}}k{{else}}pm{{end}}">{{venueName .Venue}}</span>{{end}}
+
+{{define "sidebar"}}<aside style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:16px">
+<section class="card" style="padding:20px;display:flex;flex-direction:column;gap:12px">
+<h2 style="margin:0;font-size:16px">Status</h2>
+<dl class="status">
+<dt>Refresh</dt><dd>{{if eq .Watch "running"}}<span class="dot" style="background:#2E7D4F"></span>watch running{{else if eq .Watch "stale"}}<span class="warn"><span class="dot" style="background:#C2620F"></span>watch holds the lock but no cycle has completed since {{stampOf .Latest.CompletedAt}}; it may have crashed (see equinox unlock)</span>{{else}}<span class="dot" style="background:#9AA6B2"></span>watch stopped; last cycle completed {{stampOf .Latest.CompletedAt}}{{end}}</dd>
+<dt>Discovery</dt><dd>{{if .Discovery}}every {{.Discovery}}, {{end}}last {{stampOf .Status.LastDiscovery}}</dd>
+<dt>Prices</dt><dd>{{if .Prices}}every {{.Prices}}, {{end}}last {{stampOf .Status.LastPrices}}</dd>
+{{range .Status.Venues}}<dt>{{venueName .Venue}}</dt>{{if .Failed}}<dd class="warn">Last fetch failed at {{stampOf .At}}. Showing data from {{stampOf .LastOK}}.</dd>{{else}}<dd>{{.Saved}} saved at {{stampOf .At}}</dd>{{end}}
 {{end}}
+<dt>This page</dt><dd>cycle {{.Snap.Cycle}} ({{.Snap.Kind}}); newest cycle {{.Latest.Cycle}}</dd>
 </dl>
-<p class="muted">The feed only reads saved records. Pages stay on their cycle until you reload.</p>
-</aside>
-</main>
-</body>
-</html>
-{{end}}
+</section>
+<section class="card" style="padding:20px;display:flex;flex-direction:column;gap:8px">
+<h2 style="margin:0;font-size:16px">Coverage</h2>
+<p style="margin:0;font-size:14px;line-height:20px" class="muted">V1 matches Federal Reserve rate markets only. Other posts show prices without a match badge.</p>
+</section>
+</aside>{{end}}
 
 {{define "feed"}}{{template "head" .Frame}}
-<div class="card" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between">
-<nav aria-label="Sort">{{range .Sorts}}{{if .On}}<a href="{{.Href}}" class="on" aria-current="page">{{.Label}}</a>{{else}}<a href="{{.Href}}">{{.Label}}</a>{{end}} {{end}}</nav>
-<form method="get" action="/">
+<main style="max-width:1216px;margin:0 auto;padding:24px 32px 40px;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+<div style="flex:999 1 640px;min-width:0;display:flex;flex-direction:column;gap:16px">
+{{template "banner" .Frame}}
+<div class="card" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:8px">
+<nav aria-label="Sort" class="tabs">{{range .Sorts}}<a href="{{.Href}}" class="tab"{{if .On}} aria-current="page"{{end}}>{{.Label}}</a>{{end}}</nav>
+<form method="get" action="/" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding-right:4px">
 <input type="hidden" name="sort" value="{{.Sort}}">
-<label>Venue <select name="venue"><option value="">All</option>{{range .Venues}}<option value="{{.}}"{{if eq . $.Venue}} selected{{end}}>{{.}}</option>{{end}}</select></label>
-<label>Category <select name="category"><option value="">All</option>{{range .Categories}}<option value="{{.}}"{{if eq . $.Category}} selected{{end}}>{{.}}</option>{{end}}</select></label>
-<button type="submit">Apply</button>
+<label style="display:flex;gap:8px;align-items:center"><span class="muted">Venue</span><select name="venue" class="sel"><option value="">All</option>{{range .Venues}}<option value="{{.}}"{{if eq . $.Venue}} selected{{end}}>{{venueName .}}</option>{{end}}</select></label>
+<label style="display:flex;gap:8px;align-items:center"><span class="muted">Category</span><select name="category" class="sel"><option value="">All</option>{{range .Categories}}<option value="{{.}}"{{if eq . $.Category}} selected{{end}}>{{.}}</option>{{end}}</select></label>
+<button type="submit" class="btn plain" style="min-height:40px;padding:0 14px">Apply</button>
 </form>
 </div>
 <section class="card" aria-label="Posts">
-{{range .Posts}}<article class="post" data-post="{{.Key}}">
+{{range .Posts}}<article class="row" data-post="{{.Key}}">
 <div class="score"><b>{{.Score}}</b>24h vol</div>
-<div>
-<div><span class="muted">r/{{or .Category "uncategorized"}}</span> <span class="pill">{{.Venue}}</span>{{range .Badges}} <span class="pill x">{{.}}</span>{{end}}</div>
-<a href="{{postHref $.Snap.Cycle .Key}}" style="font-weight:600">{{.Event}}</a>
-<div class="muted">{{len .Markets}} markets · closes {{.Closes}}</div>
+<div style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="muted small">r/{{or .Category "uncategorized"}}</span>{{template "flair" (flairOf .Venue $.Reference)}}{{range .Badges}}<span class="pill x">{{.}}</span>{{end}}</div>
+<a href="{{postHref $.Snap.Cycle .Key}}" class="title">{{.Event}}</a>
+<span class="muted small">{{len .Markets}} markets · closes {{.Closes}}{{if .OutOfVocab}} · not in the V1 vocabulary{{else if .PricesSaved}} · prices saved {{.PricesSaved}}{{end}}</span>
 </div>
 </article>
-{{else}}<p class="muted">No posts match these filters.</p>{{end}}
+{{else}}<p class="muted" style="padding:16px 20px;margin:0">No posts match these filters.</p>{{end}}
 </section>
-<div style="text-align:center">
-{{if .More}}<a href="{{.More}}" class="card" style="display:inline-block">Load more</a>{{end}}
-<div class="muted">{{.Shown}} of {{.Total}} posts in cycle {{.Snap.Cycle}}</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+{{if .More}}<a href="{{.More}}" class="btn plain">Load more</a>{{end}}
+<span class="muted small">{{.Shown}} of {{.Total}} posts in this cycle</span>
 </div>
-{{template "foot" .Frame}}{{end}}
+</div>
+{{template "sidebar" .Frame}}
+</main>
+</body>
+</html>{{end}}
 
 {{define "post"}}{{template "head" .Frame}}
-<a href="{{.Back}}">Back to feed</a>
+<main style="max-width:960px;margin:0 auto;padding:24px 32px 40px;display:flex;flex-direction:column;gap:16px">
+{{template "banner" .Frame}}
+<a href="{{.Back}}" style="align-self:flex-start;padding:8px 0">Back to feed</a>
 {{with .Post}}
-<section class="card">
-<div><span class="muted">r/{{or .Category "uncategorized"}}</span> <span class="pill">{{.Venue}}</span> <span class="muted">24h vol {{.Score}}</span></div>
-<h1 style="margin:4px 0;font-size:22px">{{.Event}}</h1>
-{{if .URL}}<a href="{{.URL}}">Open on {{.Venue}}</a>{{end}}
+<section class="card" style="padding:20px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="muted small">r/{{or .Category "uncategorized"}}</span>{{template "flair" (flairOf .Venue $.Reference)}}<span class="muted small">24h vol {{.Score}}</span></div>
+<h1 style="margin:0;font-size:24px;line-height:30px">{{.Event}}</h1>
+{{if .URL}}<a href="{{.URL}}" style="align-self:flex-start;font-size:14px">Open on {{venueName .Venue}}</a>{{end}}
 </section>
-<h2 style="margin:4px 0;font-size:16px">{{len .Markets}} markets</h2>
-{{range .Markets}}<article class="card" data-market="{{.Card.Ref}}">
-<div style="font-weight:600">{{.Card.Record.Title}} {{if .Badge}}<span class="pill x">{{.Badge}}</span>{{end}}</div>
-<div>Yes <b>{{.Yes.Value}}</b> <span class="muted">saved {{.Yes.PricedAt}}</span> · No <b>{{.No.Value}}</b> <span class="muted">saved {{.No.PricedAt}}</span> <span class="muted">· 24h vol {{or .Card.Record.Volume24h "-"}}</span></div>
-<details><summary class="muted">Payoff fields</summary><dl>{{range .Fields}}<dt class="muted">{{.Name}}</dt><dd><code>{{if .Set}}{{.Value}}{{else}}empty{{end}}</code></dd>{{end}}</dl></details>
-{{if or .Bot .Others}}<div class="bot{{if not .Bot}} refused{{end}}">
-<div class="muted"><b>equinox-bot</b> · from the decision log</div>
-{{range .Bot}}<div class="line">{{.Label}} <code>{{.Code}}</code> {{.Reason}}{{if .Other}} <span class="muted">vs {{.Other}}</span>{{end}} <span class="muted">{{.DecidedAt}}</span></div>
+<h2 style="margin:8px 0 0;font-size:16px">{{len .Markets}} markets</h2>
+{{range .Markets}}<article class="card mkt" data-market="{{.Card.Ref}}">
+<div class="head"><span class="mt">{{.Card.Record.Title}}</span>{{if .Badge}}<span class="pill x">{{.Badge}}</span>{{end}}</div>
+<div class="prices"><span class="px">Yes <b>{{.Yes.Value}}</b></span><span class="px">No <b>{{.No.Value}}</b></span><span class="muted small">saved {{.Yes.PricedAt}}</span>{{if .Card.Record.Volume24h}}<span class="muted small">· 24h vol {{.Card.Record.Volume24h}}</span>{{end}}</div>
+<details>
+<summary style="cursor:pointer;font-size:14px;color:#1F5FAD">Payoff fields</summary>
+<dl class="fields">{{range .Fields}}<dt class="muted">{{.Name}}</dt><dd><code{{if not .Set}} class="no"{{end}}>{{if .Set}}{{.Value}}{{else}}empty{{end}}</code></dd>{{end}}</dl>
+</details>
+{{if .Bot}}<div class="bot{{if .Refused}} refused{{end}}">
+<span class="bh"><b style="color:#17202B">equinox-bot</b> · from the log, {{(index .Bot 0).DecidedAt}}</span>
+{{range .Bot}}<span class="lab">{{.Label}}</span><span><code{{if .Refused}} class="no"{{end}}>{{.Code}}</code> {{.Reason}}{{if .Other}} <span class="muted">vs {{.Other}}</span>{{end}}</span>
 {{end}}
-{{if .Others}}<details><summary class="muted">{{len .Others}} comparisons were not_same</summary>
-{{range .Others}}<div class="line">{{.Label}} <code>{{.Code}}</code> {{.Reason}} <span class="muted">vs {{.Other}} · {{.DecidedAt}}</span></div>
+{{if .Others}}<details class="more"><summary class="muted" style="cursor:pointer">{{len .Others}} more comparisons, all not_same</summary>
+{{range .Others}}<div style="margin-top:6px"><code class="no">{{.Code}}</code> {{.Reason}} <span class="muted">vs {{.Other}}</span></div>
 {{end}}</details>{{end}}
-</div>{{else}}<div class="muted">No match record for this market.</div>{{end}}
+</div>{{else}}<div class="muted small">No match record for this market.</div>{{end}}
 </article>
 {{end}}
 {{end}}
-{{template "foot" .Frame}}{{end}}
+</main>
+</body>
+</html>{{end}}
 
 {{define "empty"}}<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Equinox feed</title></head>
-<body><h1>Equinox</h1><p>No cycle has completed yet. The feed shows data once a fetch, match or route cycle completes.</p></body></html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Equinox feed</title>{{template "style"}}</head>
+<body><header><span class="brand">Equinox</span><span class="muted">Read only</span></header>
+<main style="max-width:960px;margin:0 auto;padding:24px 32px"><div class="card" style="padding:20px">No cycle has completed yet. The feed shows data once a fetch, match or route cycle completes.</div></main></body></html>
 {{end}}

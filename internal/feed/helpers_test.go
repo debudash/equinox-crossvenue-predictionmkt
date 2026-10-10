@@ -169,7 +169,7 @@ func get(t *testing.T, srv *httptest.Server, path string) string {
 
 var (
 	postRE = regexp.MustCompile(`data-post="([^"]*)"`)
-	moreRE = regexp.MustCompile(`<a href="([^"]*)" class="card"[^>]*>Load more</a>`)
+	moreRE = regexp.MustCompile(`<a href="([^"]*)" class="btn plain"[^>]*>Load more</a>`)
 )
 
 // postKeys returns the post keys on a page, in order.

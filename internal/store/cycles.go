@@ -178,3 +178,13 @@ func (r *RunLock) Holder(ctx context.Context) (holder string, since time.Time, h
 	since, err = parseTS(at)
 	return holder, since, err == nil, err
 }
+
+// LatestCompletedOfKind returns the newest completed cycle of one kind, or
+// false if none has completed.
+func (r *Cycles) LatestCompletedOfKind(ctx context.Context, kind string) (Cycle, bool, error) {
+	c, err := scanCycle(r.s.q.QueryRowContext(ctx, cycleSelect+` WHERE status = 'completed' AND kind = ? ORDER BY id DESC LIMIT 1`, kind))
+	if errors.Is(err, sql.ErrNoRows) {
+		return Cycle{}, false, nil
+	}
+	return c, err == nil, err
+}
