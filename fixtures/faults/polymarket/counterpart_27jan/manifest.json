@@ -1,0 +1,14 @@
+{
+  "description": "SYNTHETIC fault fixture for test 17: one Polymarket US shaped market that equals Kalshi KXFED-27JAN-T3.75 (fixtures/kalshi/malformed) in every payoff field except decider, which is empty on the Kalshi card because its settlement source (Bank of England) is outside vocab.yaml.",
+  "routes": [
+    {
+      "path": "/v1/markets",
+      "query": "categories=macro&active=true&closed=false&limit=100&offset=0",
+      "file": "markets_0.json"
+    },
+    {
+      "path": "/v1/markets/synthetic-fedfnds-2027-01-27-gt3pt75/book",
+      "file": "books/synthetic-fedfnds-2027-01-27-gt3pt75.json"
+    }
+  ]
+}
