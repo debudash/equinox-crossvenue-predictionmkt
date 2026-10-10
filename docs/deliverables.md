@@ -9,5 +9,5 @@
 | AI usage log | docs/ai-usage-log.md | all | [x] |
 | Deployment guide | README.md, docs/deployment.md | T-30 | [x] |
 | HLD and LLD diagrams | docs/architecture.md | planning | [x] |
-| Wireframes | design canvas link in README | planning, T-21 | [x] approved |
+| Wireframes | docs/wireframes-approved-2026-10-09.pdf, docs/screens-as-built-2026-10-10.pdf, canvas link in README | planning, T-21 | [x] approved, as-built recorded |
 | Red team | docs/red-team.md, internal/redteam | T-22 | [x] |

@@ -89,7 +89,16 @@ Key choices: deadline is the moment the outcome is read (Kalshi KXFED event stri
 | Demo_Script.md | Timed demo |
 | TASKS.md, docs/tasks/, docs/status.md | Agent task board, specs, build log |
 | docs/ai-usage-log.md | AI usage disclosure |
-| Wireframes | https://claude.ai/artifact/TghfanvCGFAfjUs5bsRk34 (workflow, command line, feed, post; approved) |
+| Wireframes | See "Wireframes" below |
+
+## Wireframes
+| Document | What it shows |
+|---|---|
+| docs/wireframes-approved-2026-10-09.pdf | The wireframes approved before implementation (workflow, command line, feed, post). Frozen; it records what was planned |
+| docs/screens-as-built-2026-10-10.pdf | The feed as built, printed from the running app: real data (no pair matched, closest refusal shown) and the SYNTHETIC pair (badges, routes) |
+| https://claude.ai/artifact/TghfanvCGFAfjUs5bsRk34 | The wireframe canvas, updated to the as-built screens. Private to the owner: share it before sending the link to a reviewer |
+
+What changed from the approved wireframes, and why: the filter bar has an Apply button (the feed works without JavaScript); the sidebar distinguishes watch running, stopped and holding the lock without completing cycles; reasons use the real log templates ("Compared yes on kalshi at 0.96 with yes on polymarket at 0.95 ..."; fees are unknown on both venues, D-20); not_same comparisons fold under the closest refusal; the command line prints counts per cycle, with every per-pair reason in the decision log and the feed.
 
 ## Path to standardization
 Venues have absorbed normalization layers rather than adopting neutral ones. The party with the incentive to standardize equivalence is a neutral intermediary that routes across venues. The measured blocker here, the same economic question listed with different boundary wording, is exactly what a shared contract vocabulary would remove. docs/spec.md drafts the card model as an extension of the FINOS Common Domain Model that PEAK6 / Apex could sponsor (ADR-007).
