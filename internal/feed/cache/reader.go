@@ -16,6 +16,7 @@ type Reader interface {
 	Prices(ctx context.Context, sc store.Scope) ([]card.PriceRecord, error)
 	Matches(ctx context.Context, sc store.Scope) ([]card.LogRecord, error)
 	Routes(ctx context.Context, sc store.Scope) ([]card.LogRecord, error)
+	Status(ctx context.Context) (Status, error)
 }
 
 // FromStore adapts a store to Reader. It forwards to read methods only.

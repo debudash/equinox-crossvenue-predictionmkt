@@ -13,8 +13,9 @@ type Cache struct {
 	r    Reader
 	keep int
 
-	mu  sync.Mutex          // serializes Refresh; readers never take it
-	set atomic.Pointer[set] // swapped whole, so readers see one consistent set
+	mu     sync.Mutex          // serializes Refresh; readers never take it
+	set    atomic.Pointer[set] // swapped whole, so readers see one consistent set
+	status atomic.Pointer[Status]
 }
 
 // set is immutable once stored. held is newest first; held[0] is current.
@@ -27,8 +28,12 @@ func New(r Reader, keep int) *Cache {
 	}
 	c := &Cache{r: r, keep: keep}
 	c.set.Store(&set{})
+	c.status.Store(&Status{})
 	return c
 }
+
+// Status returns the refresh status read at the last check.
+func (c *Cache) Status() Status { return *c.status.Load() }
 
 // Current returns the newest snapshot, or nil before any cycle has completed.
 func (c *Cache) Current() *Snapshot {
@@ -54,6 +59,11 @@ func (c *Cache) At(cycle int64) (*Snapshot, bool) {
 func (c *Cache) Refresh(ctx context.Context) (bool, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
+	st, err := c.r.Status(ctx)
+	if err != nil {
+		return false, err
+	}
+	c.status.Store(&st)
 	latest, ok, err := c.r.LatestCompleted(ctx)
 	if err != nil || !ok {
 		return false, err

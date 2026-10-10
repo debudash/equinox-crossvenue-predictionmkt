@@ -78,7 +78,7 @@ func TestAmd_W6_LoadMorePagesWithinReadersCycle(t *testing.T) {
 			t.Fatalf("Load more link %q does not carry the page's cycle %d", more, last)
 		}
 		page = get(t, srv, more)
-		if !strings.Contains(text(page), "New data saved at "+stamp(t5)+". Reload.") {
+		if !strings.Contains(text(page), "New data saved at "+stamp(t5)+". Reload") {
 			t.Errorf("page after the newer cycle lacks the new-data banner")
 		}
 		got = append(got, postKeys(page)...)
@@ -117,7 +117,7 @@ func TestAmd_W10_ServeKeepsLastCycleWhenWatchStopped(t *testing.T) {
 	}
 	for _, want := range []string{
 		"cycle " + strconv.FormatInt(last, 10) + " · completed " + stamp(t2),
-		"Last completed cycle</dt><dd>" + strconv.FormatInt(last, 10) + " (match) at " + stamp(t2),
+		"no cycle has completed since " + stamp(t2) + "; it may have crashed",
 		`data-post="polymarket|Big game"`,
 	} {
 		if !strings.Contains(page, want) {
@@ -132,28 +132,27 @@ func TestFeedPost_CrosspostBadgeAndBotReplyVerbatim(t *testing.T) {
 	_, srv := serve(t, f, 25, 2)
 
 	feed := get(t, srv, "/")
-	if !strings.Contains(feed, `<span class="pill x">Same bet on polymarket</span>`) ||
-		!strings.Contains(feed, `<span class="pill x">Same bet on kalshi</span>`) {
+	if !strings.Contains(feed, `<span class="pill x">Same bet on Polymarket</span>`) ||
+		!strings.Contains(feed, `<span class="pill x">Same bet on Kalshi</span>`) {
 		t.Error("feed lacks the crosspost badge on both sides of the same pair")
 	}
 
 	cy := strconv.FormatInt(last, 10)
 	post := get(t, srv, "/post?cycle="+cy+"&key=kalshi|Fed+December")
 	for _, want := range []string{
-		"Match <code>same</code> " + sameReason,
+		`<span class="lab">Match</span><span><code>same</code> ` + sameReason,
 		"<code>buy_on_polymarket</code> " + routeYesReason,
-		"<code>no_route</code> " + routeNoReason,
-		"<code>not_same</code> " + notSameReason,
-		"Yes <b>0.45</b> <span class=\"muted\">saved " + stamp(t1),
-		"No <b>0.56</b>",
-		"Market KA <span class=\"pill x\">Same bet on polymarket</span>",
+		`<code class="no">no_route</code> ` + routeNoReason,
+		`<code class="no">not_same</code> ` + notSameReason,
+		`Yes <b>0.45</b></span><span class="px">No <b>0.56</b></span><span class="muted small">saved ` + stamp(t1),
+		`<span class="mt">Market KA</span><span class="pill x">Same bet on Polymarket</span>`,
 	} {
 		if !strings.Contains(post, want) {
 			t.Errorf("post lacks %q", want)
 		}
 	}
 	// KB only has a not_same record, so it carries no badge.
-	if strings.Contains(post, "Market KB <span") {
+	if strings.Contains(post, `Market KB</span><span class="pill`) {
 		t.Error("KB shows a crosspost badge but its only match is not_same")
 	}
 
@@ -212,7 +211,7 @@ func TestFeed_WorksWithoutJavaScript(t *testing.T) {
 		}
 	}
 	feed := pages[0]
-	for _, want := range []string{`<form method="get" action="/">`, `<button type="submit">Apply</button>`, `<select name="venue">`, `<select name="category">`, ">Load more</a>"} {
+	for _, want := range []string{`<form method="get" action="/"`, `<button type="submit"`, ">Apply</button>", `<select name="venue"`, `<select name="category"`, ">Load more</a>"} {
 		if !strings.Contains(feed, want) {
 			t.Errorf("feed lacks plain-HTML control %q", want)
 		}
@@ -259,7 +258,7 @@ func TestFeed_NoWriteMethodsReachable(t *testing.T) {
 	for i := range rt.NumMethod() {
 		methods = append(methods, rt.Method(i).Name)
 	}
-	if want := []string{"Cards", "LatestCompleted", "Matches", "Prices", "Routes"}; !slices.Equal(methods, want) {
+	if want := []string{"Cards", "LatestCompleted", "Matches", "Prices", "Routes", "Status"}; !slices.Equal(methods, want) {
 		t.Errorf("cache.Reader methods %v, want exactly the read methods %v", methods, want)
 	}
 

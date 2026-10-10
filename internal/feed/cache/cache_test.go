@@ -37,6 +37,8 @@ func (f *fakeReader) Routes(context.Context, store.Scope) ([]card.LogRecord, err
 	return nil, nil
 }
 
+func (f *fakeReader) Status(context.Context) (Status, error) { return Status{}, nil }
+
 func TestCache_RefreshSwapsAndKeepsPrevious(t *testing.T) {
 	ctx := context.Background()
 	r := &fakeReader{}
