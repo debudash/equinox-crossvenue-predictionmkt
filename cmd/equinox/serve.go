@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -33,7 +34,7 @@ func init() {
 				every = 5 * time.Second
 			}
 
-			ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt)
+			ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt, syscall.SIGTERM)
 			defer stop()
 			c := cache.New(cache.FromStore(e.st), e.cfg.Feed.KeepSnapshots)
 			if _, err := c.Refresh(ctx); err != nil {
