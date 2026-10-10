@@ -111,7 +111,7 @@ code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;padding:
 <div class="pc-top">{{if not $.InModule}}<span class="muted small">r/{{or .Category "uncategorized"}}</span>{{end}}{{template "flair" (flairOf .Venue $.Reference)}}{{range .Badges}}<span class="pill x">{{.}}</span>{{end}}</div>
 <a href="{{postHref $.Cycle .Key}}" class="title">{{.Event}}</a>
 {{with .Lead}}<div class="lead">{{.Card.Record.Title}}</div><div class="prices">{{template "prices" .}}</div>{{end}}
-<span class="muted small">{{len .Markets}} markets · closes {{.Closes}}{{if .OutOfVocab}} · not in the V1 vocabulary{{else if .PricesSaved}} · prices saved {{.PricesSaved}}{{end}}</span>
+<span class="muted small">{{len .Markets}} markets · closes {{.Closes}}{{if .OutOfVocab}} · display only, not matched{{else if .PricesSaved}} · prices saved {{.PricesSaved}}{{end}}</span>
 </div>
 </div>
 </article>{{end}}{{end}}

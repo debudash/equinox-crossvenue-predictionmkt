@@ -247,6 +247,33 @@ func sortLinks(keep url.Values, current string) []sortLink {
 	return out
 }
 
+// topWithEveryVenue picks up to n posts from a ranked list, reserving a slot
+// for the best post of each venue present, so a venue that reports no volume
+// still appears in its category. The result keeps rank order.
+func topWithEveryVenue(ranked []*Post, n int) []*Post {
+	pick := map[int]bool{}
+	seen := map[string]bool{}
+	for i, p := range ranked {
+		if !seen[p.Venue] && len(pick) < n {
+			seen[p.Venue] = true
+			pick[i] = true
+		}
+	}
+	for i := range ranked {
+		if len(pick) >= n {
+			break
+		}
+		pick[i] = true
+	}
+	var out []*Post
+	for i, p := range ranked {
+		if pick[i] {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
 // overview renders one module per category with its top posts by volume.
 func (s *Server) overview(w http.ResponseWriter, q url.Values, snap *cache.Snapshot) {
 	venue := q.Get("venue")
@@ -268,7 +295,7 @@ func (s *Server) overview(w http.ResponseWriter, q url.Values, snap *cache.Snaps
 				sec.Matched++
 			}
 		}
-		sec.Top = posts[:min(overviewSize, len(posts))]
+		sec.Top = topWithEveryVenue(posts, overviewSize)
 		v := cloneValues(keep)
 		v.Set("category", cat)
 		v.Set("sort", SortTop)

@@ -45,18 +45,18 @@ Amendment tests
 
 ## Full suite (go test ./... -count=1)
 
-128 top-level tests, 128 pass, 0 fail, 0 skipped. `make test lint guard` exits 0 (go vet, staticcheck, guard).
+142 top-level tests, 142 pass, 0 fail, 0 skipped. `make test lint guard` exits 0 (go vet, staticcheck, guard).
 
 | Package | Tests |
 |---|---|
 | cmd/equinox | 5 |
 | internal/acceptance | 8 |
 | internal/card | 12 |
-| internal/feed | 11 |
+| internal/feed | 14 |
 | internal/feed/cache | 1 |
-| internal/fetch/kalshi | 11 |
-| internal/fetch/polymarket | 12 |
-| internal/fetch/registry | 2 |
+| internal/fetch/kalshi | 14 |
+| internal/fetch/polymarket | 18 |
+| internal/fetch/registry | 4 |
 | internal/match | 11 |
 | internal/redteam | 14 |
 | internal/route | 10 |

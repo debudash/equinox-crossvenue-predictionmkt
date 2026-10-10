@@ -81,6 +81,18 @@ func sharedFields(a, b card.Card) int {
 	return n
 }
 
+// categoryAliases folds venue category names that mean the same section into
+// one display name, so the overview has one module per topic. Display only:
+// the stored card keeps the venue's own category.
+var categoryAliases = map[string]string{"macro": "Economics"}
+
+func displayCategory(c string) string {
+	if a, ok := categoryAliases[c]; ok {
+		return a
+	}
+	return c
+}
+
 // buildPosts groups a snapshot's cards into posts in a fixed base order
 // (venue, then event title), so paging through one snapshot is stable.
 func buildPosts(s *cache.Snapshot) []*Post {
@@ -101,7 +113,7 @@ func buildPosts(s *cache.Snapshot) []*Post {
 		}
 		p := byKey[key]
 		if p == nil {
-			p = &Post{Key: key, Venue: c.Venue, Event: event, Category: c.Record.Category, URL: c.Record.URL}
+			p = &Post{Key: key, Venue: c.Venue, Event: event, Category: displayCategory(c.Record.Category), URL: c.Record.URL}
 			byKey[key] = p
 			order = append(order, key)
 		}
@@ -219,7 +231,7 @@ func finishPost(p *Post, now time.Time) {
 	}
 	p.Score = "-"
 	if p.volume != nil {
-		p.Score = strings.TrimSuffix(strings.TrimRight(p.volume.FloatString(2), "0"), ".")
+		p.Score = compact(p.volume)
 	}
 }
 
@@ -252,6 +264,24 @@ func (p *Post) Lead() *Market {
 
 // Matched reports whether any market in the post has a same or opposite match.
 func (p *Post) Matched() bool { return len(p.Badges) > 0 }
+
+// compact formats a volume for display: 950, 78.3K, 1.5M. Exact rational
+// arithmetic; display only.
+func compact(v *big.Rat) string {
+	trim := func(r *big.Rat, digits int) string {
+		return strings.TrimSuffix(strings.TrimRight(r.FloatString(digits), "0"), ".")
+	}
+	for _, u := range []struct {
+		div    int64
+		suffix string
+	}{{1_000_000_000, "B"}, {1_000_000, "M"}, {1_000, "K"}} {
+		d := big.NewRat(u.div, 1)
+		if v.Cmp(d) >= 0 {
+			return trim(new(big.Rat).Quo(v, d), 1) + u.suffix
+		}
+	}
+	return trim(v, 2)
+}
 
 // Closes returns the earliest deadline still ahead, or "-".
 func (p *Post) Closes() string { return stamp(p.closing) }

@@ -5,6 +5,7 @@ import (
 	"equinox/internal/card"
 	"go/parser"
 	"go/token"
+	"math/big"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -334,5 +335,30 @@ func TestFeed_OverviewShowsTopFivePerCategory(t *testing.T) {
 	}
 	if !strings.Contains(page, "top 5 of 7 posts") || !strings.Contains(page, `href="/?category=Crypto&sort=top">See all</a>`) {
 		t.Error("crypto module should say top 5 of 7 and link to the full list")
+	}
+}
+
+func TestFeed_CompactVolume(t *testing.T) {
+	for in, want := range map[string]string{"950": "950", "78349.6": "78.3K", "1480945.33": "1.5M", "150": "150", "12.5": "12.5", "1000": "1K"} {
+		r, _ := new(big.Rat).SetString(in)
+		if got := compact(r); got != want {
+			t.Errorf("compact(%s) = %s, want %s", in, got, want)
+		}
+	}
+}
+
+func TestFeed_TopKeepsEveryVenue(t *testing.T) {
+	var ranked []*Post
+	for i := 0; i < 6; i++ {
+		ranked = append(ranked, &Post{Key: "k" + strconv.Itoa(i), Venue: "kalshi"})
+	}
+	ranked = append(ranked, &Post{Key: "p0", Venue: "polymarket"})
+	got := topWithEveryVenue(ranked, 5)
+	if len(got) != 5 || got[4].Key != "p0" || got[0].Key != "k0" {
+		var keys []string
+		for _, p := range got {
+			keys = append(keys, p.Key)
+		}
+		t.Fatalf("got %v, want k0..k3 then p0", keys)
 	}
 }
