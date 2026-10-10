@@ -261,13 +261,19 @@ func deadlineOf(rules string) card.Opt[card.Instant] {
 	return card.Some(out)
 }
 
-// unclearResultOf: always empty (owner decision D-20). Polymarket US Fed
-// market rules never say what is paid if the outcome cannot be determined, and
-// no Fed-specific clause was found in the filed contract terms or the PMUS
-// Rulebook. The venue's general docs say contracts settle at $1.00 or $0.00,
-// but a payoff field is filled only from a source tied to that contract, so
-// unknown stays empty and never matches.
-func unclearResultOf(string) card.Opt[card.UnclearResult] {
+// unclearResultOf (owner decision D-20): a payoff field is filled only from a
+// source tied to that contract. The market's own rules text is such a source,
+// so one explicit sentence saying the market resolves to Yes or No when the
+// outcome cannot be determined gives yes_or_no_only. Anything else is empty.
+// Real Polymarket US Fed rules (2026-10-10) have no such sentence, and no
+// Fed-specific clause was found in the filed contract terms or the PMUS
+// Rulebook; the venue's general docs ($1 or $0) are not contract specific.
+var binaryFallback = regexp.MustCompile(`(?i)if the outcome cannot be determined[^.]*\bresolves? to (yes|no)\b`)
+
+func unclearResultOf(rules string) card.Opt[card.UnclearResult] {
+	if binaryFallback.MatchString(rules) {
+		return card.Some(card.YesOrNoOnly)
+	}
 	return card.None[card.UnclearResult]()
 }
 

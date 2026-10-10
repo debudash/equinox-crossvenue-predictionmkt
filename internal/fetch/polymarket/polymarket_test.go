@@ -363,6 +363,7 @@ func TestPolymarket_CutoffAndDeadlineParsing(t *testing.T) {
 	require.True(t, deadlineOf("on June 30, 2027 at 11:59 PM ET or July 1, 2027 at 1:00 PM ET").IsEmpty(), "two moments are ambiguous")
 	require.True(t, unclearResultOf("If the game is canceled, this market will resolve 50-50.").IsEmpty())
 	require.True(t, unclearResultOf("This market will settle to Yes if the upper bound ... Outcome sourced from the United States Federal Reserve.").IsEmpty(), "D-20: silent rules stay empty")
+	require.Equal(t, card.Some(card.YesOrNoOnly).Equal(unclearResultOf("If the outcome cannot be determined by the deadline, this market resolves to No.")), true, "D-20: an explicit fallback sentence in the rules counts")
 }
 
 // A 429 is retried with backoff (1s, 2s, 4s), then the run fails without an error return.
