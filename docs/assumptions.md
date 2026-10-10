@@ -15,7 +15,7 @@
 |---|---|---|
 | A-1 | Router uses the latest price with priced_at not after as_of, so a rerun at the same as_of ignores later fetches. Approved as D-07 | - |
 | A-2 | Kalshi and Polymarket market data endpoints are readable without auth | T-10 / T-11 confirm against official docs |
-| A-3 | The Polymarket fetcher reads Polymarket US through its public market data API; prices are integer-encoded strings | T-11 confirms field names and rate limits against docs.polymarket.us |
+| A-3 | The Polymarket fetcher reads Polymarket US through its public market data API; prices are decimal dollar strings (superseded, see A-11) | T-11 confirms field names and rate limits against docs.polymarket.us |
 | A-4 | Fees are read or derived per the venue's published schedule, else stored empty | Official fee docs differ by market type |
 | A-5 | Every data row (cards, prices, decision_log, raw_responses, skips, fetch_runs, subject_counts) carries the cycle_id that wrote it. Readers see only rows from completed cycles; a writer also sees its own open cycle. This is how W5 is enforced | Wave 0 review |
 | A-6 | Cards are versioned: a new row is written only when a field other than raw_ref and fetched_at changes. Readers take the latest visible version. Rebuild clears cards and re-saves from raw responses in id order, reproducing identical rows | Wave 0 review |

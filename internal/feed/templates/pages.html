@@ -71,7 +71,7 @@ code.no{background:#FDF3E8;color:#9A4A08}
 <dt>Refresh</dt><dd>{{if eq .Watch "running"}}<span class="dot" style="background:#2E7D4F"></span>watch running{{else if eq .Watch "stale"}}<span class="warn"><span class="dot" style="background:#C2620F"></span>watch holds the lock but no cycle has completed since {{stampOf .Latest.CompletedAt}}; it may have crashed (see equinox unlock)</span>{{else}}<span class="dot" style="background:#9AA6B2"></span>watch stopped; last cycle completed {{stampOf .Latest.CompletedAt}}{{end}}</dd>
 <dt>Discovery</dt><dd>{{if .Discovery}}every {{.Discovery}}, {{end}}last {{stampOf .Status.LastDiscovery}}</dd>
 <dt>Prices</dt><dd>{{if .Prices}}every {{.Prices}}, {{end}}last {{stampOf .Status.LastPrices}}</dd>
-{{range .Status.Venues}}<dt>{{venueName .Venue}}</dt>{{if .Failed}}<dd class="warn">Last fetch failed at {{stampOf .At}}. Showing data from {{stampOf .LastOK}}.</dd>{{else}}<dd>{{.Saved}} saved at {{stampOf .At}}</dd>{{end}}
+{{range .Status.Venues}}<dt>{{venueName .Venue}}</dt>{{if .Failed}}<dd class="warn">Last fetch failed at {{stampOf .At}}. {{if .LastOK.IsZero}}No successful fetch yet.{{else}}Showing data from {{stampOf .LastOK}}.{{end}}</dd>{{else}}<dd>{{.Saved}} saved at {{stampOf .At}}</dd>{{end}}
 {{end}}
 <dt>This page</dt><dd>cycle {{.Snap.Cycle}} ({{.Snap.Kind}}); newest cycle {{.Latest.Cycle}}</dd>
 </dl>

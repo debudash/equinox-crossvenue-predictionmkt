@@ -20,7 +20,7 @@ flowchart LR
   end
   kalshi[(Kalshi public API)]
   poly[(Polymarket US public API)]
-  person -- "CLI: fetch, match, route, rebuild" --> sys
+  person -- "CLI: fetch, match, route, rebuild, watch, unlock" --> sys
   person -- "browser: read-only feed" --> sys
   sys -- "fetch open markets and prices" --> kalshi
   sys -- "fetch open markets and prices" --> poly
@@ -88,6 +88,11 @@ erDiagram
   CARDS ||--o{ DECISION_LOG : "market_a or market_b"
 
   CYCLES ||--o{ FETCH_RUNS : groups
+  CYCLES ||--o{ CARDS : writes
+  CYCLES ||--o{ PRICES : writes
+  CYCLES ||--o{ DECISION_LOG : writes
+  CYCLES ||--o{ SKIPS : writes
+  CYCLES ||--o{ SUBJECT_COUNTS : writes
   CYCLES {
     int id
     string kind
@@ -102,6 +107,7 @@ erDiagram
   }
   FETCH_RUNS {
     int id
+    int cycle_id
     string venue
     string started_at
     string finished_at
@@ -112,7 +118,9 @@ erDiagram
   }
   RAW_RESPONSES {
     int id
+    int cycle_id
     int run_id
+    string kind
     string venue
     string endpoint
     string fetched_at
@@ -120,12 +128,17 @@ erDiagram
     blob body
   }
   SKIPS {
+    int id
+    int cycle_id
     int run_id
+    string stage
     string venue
     string market_id
     string reason
   }
   CARDS {
+    int id
+    int cycle_id
     string venue
     string market_id
     string subject
@@ -145,6 +158,8 @@ erDiagram
     string url
   }
   PRICES {
+    int id
+    int cycle_id
     string venue
     string market_id
     string side
@@ -154,6 +169,7 @@ erDiagram
   }
   DECISION_LOG {
     int id
+    int cycle_id
     string record_type
     string decided_at
     string as_of
@@ -170,8 +186,14 @@ erDiagram
     string action
     string reason
   }
+  SUBJECT_COUNTS {
+    int cycle_id
+    string subject
+    string venue
+    int count
+  }
 ```
-Empty payoff fields are stored as NULL. Prices and fees are stored as decimal strings and parsed into integer micro-dollars in Go. The log tables have no UPDATE or DELETE paths.
+Every data row carries the cycle_id that wrote it, and readers see only completed cycles. Cards are versioned: a new row only when a card changes (assumptions A-5 to A-9; internal/store/schema.sql is the source). Empty payoff fields are stored as NULL. Prices and fees are stored as decimal strings and parsed into integer micro-dollars in Go. The log tables have no UPDATE or DELETE paths.
 
 ### Core types and boundaries
 ```mermaid

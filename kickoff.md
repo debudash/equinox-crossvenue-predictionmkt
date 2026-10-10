@@ -1,5 +1,7 @@
 # Kickoff message for Claude Code (or the AO project orchestrator)
 
+Historical: used to start the build on 2026-10-09. The build is complete.
+
 Paste everything below the line as your first message.
 
 ---

@@ -19,7 +19,7 @@ Data lives in data/equinox.db (config/equinox.yaml `storage.sqlite_path`); raw r
 ```
 go run ./scripts/seed --db data/demo.db
 ```
-Point a copy of config/equinox.yaml at data/demo.db to serve it. Running seed again adds a new cycle, which makes a running feed show its new-data banner.
+Serve it with `./equinox serve --config config/demo.yaml`. Running seed again adds a new cycle, which makes a running feed show its new-data banner.
 
 ## Docker (tested 2026-10-10: image builds, CLI runs)
 ```

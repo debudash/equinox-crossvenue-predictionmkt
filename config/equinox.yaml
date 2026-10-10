@@ -3,8 +3,8 @@ venues:
   allowed: [kalshi, polymarket]   # any other venue value in saved data is skipped as inconsistent
 fetchers:
   polymarket:
-    source: polymarket_us         # polymarket_us (default) or polymarket_international (fallback per amendment A9)
-    base_url: https://gateway.polymarket.us   # public market data API, no key; confirm in T-11
+    source: polymarket_us         # informational; only Polymarket US is implemented (D-19)
+    base_url: https://gateway.polymarket.us   # public market data API, no key (see internal/fetch/polymarket/NORMALIZATION.md)
 router:
   reference_venue: kalshi         # requested side is stated relative to this venue's card; wins exact cost ties
   counter_venue: polymarket

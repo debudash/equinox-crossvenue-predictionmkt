@@ -8,7 +8,7 @@ The PRD does not define a better venue. Best execution regimes do: they weigh pr
 ## Decision
 - Route only `same` and `opposite` pairs. For `opposite`, buying YES on the reference venue is compared with buying NO on the counter venue.
 - Refuse when either buy price is empty or stale, naming which.
-- Cost is buy price plus fee only when fees are known on both venues; otherwise buy price on both, and the log says fees were not applied. Fees materially change comparisons; for example, one public calculator models a Kalshi taker formula of 0.07 x P x (1-P) against zero fees on Polymarket standard markets [Predictions.io, cross-venue gaps]. Fee values are verified against official venue documentation before use.
+- Cost is buy price plus fee only when fees are known on both venues; otherwise buy price on both, and the log says fees were not applied. Fees materially change comparisons; for example, one public calculator models a Kalshi taker formula of 0.07 x P x (1-P) against zero fees on Polymarket standard markets [Predictions.io, cross-venue gaps]. Fees are stored empty when not exactly derivable per contract; in V1 they are empty on both venues (see the NORMALIZATION.md files).
 - Lower cost wins. Exact ties go to the reference venue (Kalshi), so the choice never flips.
 - One contract at the saved buy price. No size, depth or slippage.
 - Venue roles (`reference_venue`, `counter_venue`) come from config/equinox.yaml, so router code contains no venue names while behaving exactly as the build requirements specify.
