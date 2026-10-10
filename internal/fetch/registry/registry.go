@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"sort"
 	"sync"
 	"time"
@@ -45,6 +46,32 @@ func All(cfg *card.Config, vocab *card.Vocab, client *http.Client, clock func() 
 		}
 	}
 	return out, nil
+}
+
+// LoadDisplay reads the display-only categories from the config file at path
+// (fetchers.<venue>.display_categories) and hands each fetcher its own list.
+// card.FetcherConfig is a frozen contract without these fields, so each
+// fetcher package parses its own section of the same YAML file. Display-only
+// cards keep their payoff fields empty and never match. Fetchers built by All
+// without this call fetch the Fed scope only.
+func LoadDisplay(path string, fs []Fetcher) error {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	for _, f := range fs {
+		switch f := f.(type) {
+		case *kalshi.Fetcher:
+			if f.Display, err = kalshi.ParseDisplay(b); err != nil {
+				return err
+			}
+		case *polymarket.Fetcher:
+			if f.Display, err = polymarket.ParseDisplay(b); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // NormalizerFor returns the markets normalizer for a venue.

@@ -49,6 +49,8 @@ config/vocab.yaml, V1: Federal Reserve rate markets only.
 
 Fetch scope: Kalshi series KXFED (per FOMC meeting) and KXFEDFUNDSYEAR (year end); Polymarket US macro markets whose rules mention the federal funds rate.
 
+Display-only categories fetched, never matched: Kalshi Economics (non-Fed: CPI, gas, jobs, GDP), Politics, Crypto, Financials, Climate and Weather and Sports; Polymarket US politics, crypto, finance, climate and sports. They are listed in config/equinox.yaml under `fetchers.<venue>.display_categories` (bounded per category) and fill the feed with real markets and prices, but their cards keep subject, cutoff, decider and unclear_result empty, so the matcher never pairs them. No vocabulary entry was added.
+
 ## Fetcher normalization choices
 Every choice is listed next to the code and in:
 - Kalshi: internal/fetch/kalshi/NORMALIZATION.md
