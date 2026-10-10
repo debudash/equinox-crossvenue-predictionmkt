@@ -12,3 +12,4 @@ Current wave: 0 (in progress)
 - 2026-10-09: D-06 (venue roles in config) and D-07 (ignore prices after as_of) approved.
 - 2026-10-09: D-08 approved (keep the settlement-wording limitation in the README). All decisions closed; pack ready for Wave 0.
 - 2026-10-09: T-00 started; scaffolding, CI, guard, and acceptance runner are in progress.
+- 2026-10-09: T-00 in review (!1). Scaffold, cobra stubs, Makefile, guard, acceptance runner; make test lint guard pass. Surprises: no prior T-00 work existed on disk or remote, so Claude Code took it over from the Copilot harness; staticcheck 0.8.1 cannot read Go 1.27 export data, so lint pins a staticcheck master commit; repo is on GitLab, so .github/workflows/ci.yml does not run here; -race skipped locally (no cgo on Windows), runs in Linux CI.
