@@ -1,5 +1,7 @@
 # Start here
 
+Historical: this pack was used to start the build, which is now complete (docs/status.md).
+
 This folder is the complete planning pack for the Equinox buildout. Drop it into an empty repo and hand it to Claude Code (or Agent Orchestrator).
 
 ## 1. Set up the repo
@@ -26,7 +28,7 @@ The agent stops at each wave boundary and reports merged tasks, failing checks, 
 
 ## 4. Still open
 - No decisions are pending. Every entry in docs/decisions.md is Locked or Approved.
-- Wave 1 gate (D-18): the agent must show at least one real Fed market pair on Kalshi and Polymarket US that fits the cutoff format before Wave 2. If none exists, you decide whether to fall back to Polymarket International (amendment A9).
+- Wave 1 gate (D-18) failed on 2026-10-10 and was resolved by D-19 (honest refusal result plus a labelled SYNTHETIC pair) and D-20. The build is complete; see docs/status.md.
 
 ## What is in the pack
 | Path | Purpose |

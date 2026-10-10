@@ -7,7 +7,7 @@ Measured on 2026-10-10 from one real session against the live public APIs (fetch
 |---|---|---|---|
 | Required tests passing | 20 of 20 | 20 of 20 | `make acceptance`, docs/test-results.md |
 | Amendment tests passing | 11 of 11 | 11 of 11 | same |
-| Full suite | - | 127 of 127 top-level tests pass | docs/test-results.md |
+| Full suite | - | 128 of 128 top-level tests pass | docs/test-results.md |
 | Determinism: identical action and reason on rerun | 100% | 100% | test 15 |
 | Rebuild produces identical cards | 100% | 479 of 479 card versions identical, no venue called | test 18; live `equinox rebuild` |
 | False matches in the match audit | 0 | 0 (no real pair was matched) | evals/match-audit.md |

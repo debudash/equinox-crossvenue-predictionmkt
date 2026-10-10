@@ -1,0 +1,21 @@
+# Runtime configuration. Venue roles live here so matcher and router code stay venue-agnostic.
+venues:
+  allowed: [kalshi, polymarket]   # any other venue value in saved data is skipped as inconsistent
+fetchers:
+  polymarket:
+    source: polymarket_us         # informational; only Polymarket US is implemented (D-19)
+    base_url: https://gateway.polymarket.us   # public market data API, no key (see internal/fetch/polymarket/NORMALIZATION.md)
+router:
+  reference_venue: kalshi         # requested side is stated relative to this venue's card; wins exact cost ties
+  counter_venue: polymarket
+  price_max_age: 10m
+storage:
+  sqlite_path: data/demo.db   # raw responses are stored in SQLite (raw_responses.body), so there is no raw_dir
+watch:
+  discovery_every: 30m          # fetch market lists; match only if cards changed
+  prices_every: 2m              # must stay well under router.price_max_age
+  retention: 24h                # prune price records and price raw responses older than this
+feed:
+  cache_check_every: 5s         # how often serve looks for a newer completed cycle
+  page_size: 25
+  keep_snapshots: 2             # current plus previous, so in-flight scrolls finish on the cycle they started

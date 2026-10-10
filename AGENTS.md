@@ -9,7 +9,7 @@ docs/build-requirements.md is authoritative. Build it as written. If anything in
 A simulation that fetches Kalshi and Polymarket markets, stores each as one market card, recognizes `same` and `opposite` bets by exact payoff-field equality, and simulates a routing choice from saved prices. It places no orders. Governing principle: precision over recall. When unsure, do not route, and record why.
 
 ## Stack
-- Go 1.23+, single module.
+- Go 1.26+, single module.
 - SQLite via `modernc.org/sqlite` (pure Go, no cgo).
 - Feed: Go `html/template`, server-rendered, no frontend framework, no JavaScript required.
 - Allowed third-party deps: `modernc.org/sqlite`, `gopkg.in/yaml.v3`, `github.com/spf13/cobra`, `github.com/stretchr/testify` (tests only). Anything else needs approval.
@@ -18,12 +18,12 @@ A simulation that fetches Kalshi and Polymarket markets, stores each as one mark
 ## Commands
 ```
 make setup      # go mod download
-make test       # go test ./... -race -count=1
+make test       # go test ./... -count=1 (adds -race when cgo is available)
 make lint       # go vet + staticcheck
 make guard      # fails if a venue name, a clock read, or a network import appears in matcher or router
 make acceptance # runs the 20 required tests by name and prints pass/fail per test number, then the amendment tests W1-W11
 ```
-CLI: `equinox fetch | match | route --side yes|no --as-of <time> | serve | rebuild | watch`
+CLI: `equinox fetch | match | route --side yes|no [--as-of <RFC3339>] | serve [--addr :8080] | rebuild | watch | unlock [--holder <name>]`, all with `--config` (default config/equinox.yaml). Demo database: `go run ./scripts/seed [--db data/demo.db]`.
 
 Amendments A1 to A9 at the end of docs/build-requirements.md add the `watch` scheduler, numbered cycles, the in-memory feed cache, the new-data banner and retention.
 
@@ -40,7 +40,14 @@ internal/route/              router: pure decision function plus a thin runner. 
 internal/feed/               read-only Reddit-style feed (templates + handlers)
 internal/feed/cache/         in-memory snapshot built from SQLite for the latest completed cycle; atomic swap
 internal/watch/              background scheduler: discovery loop, price loop, retention; holds the run lock
+internal/testkit/             fixture transport, fault scenarios, fixed as_of, temp store (tests only)
+internal/acceptance/          end-to-end tests over fixtures (required tests 16, 17, 19, 20)
+internal/redteam/             red-team tests named TestRT_Rxx
+scripts/guard/                make guard
+scripts/acceptance/           make acceptance
+scripts/seed/                 SYNTHETIC demo database, no venue called
 config/equinox.yaml          venue roles, price age limit, storage path
+config/demo.yaml             same, pointing at data/demo.db
 config/vocab.yaml            shared vocabulary: subjects, deciders, cutoff units
 fixtures/                    saved raw venue responses for tests
 ```
