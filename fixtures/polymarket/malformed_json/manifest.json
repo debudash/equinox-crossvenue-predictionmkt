@@ -1,0 +1,11 @@
+{
+  "description": "Fault: the Polymarket US markets list body is cut in half, so it does not parse.",
+  "routes": [
+    {
+      "path": "/v1/markets",
+      "query": "categories=macro&active=true&closed=false&limit=100&offset=0",
+      "file": "markets.json",
+      "fault": "malformed_json"
+    }
+  ]
+}
