@@ -1,0 +1,7 @@
+{
+  "description": "The KXFED response body is a lone opening brace, so it does not parse (testkit malformed_json fault with no file); the KXFEDFUNDSYEAR request returns no events.",
+  "routes": [
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFED&status=open&with_nested_markets=true&limit=200", "fault": "malformed_json"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFEDFUNDSYEAR&status=open&with_nested_markets=true&limit=200", "file": "events_empty.json"}
+  ]
+}
