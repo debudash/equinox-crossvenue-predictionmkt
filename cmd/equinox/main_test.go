@@ -25,10 +25,10 @@ func TestRootHasEveryCommand(t *testing.T) {
 
 func TestStubReportsOwner(t *testing.T) {
 	root := newRoot()
-	root.SetArgs([]string{"match"})
+	root.SetArgs([]string{"watch"})
 	err := root.Execute()
-	if err == nil || !strings.Contains(err.Error(), "not implemented") || !strings.Contains(err.Error(), "T-12") {
-		t.Fatalf("want not-implemented error naming T-12, got %v", err)
+	if err == nil || !strings.Contains(err.Error(), "not implemented") || !strings.Contains(err.Error(), "T-23") {
+		t.Fatalf("want not-implemented error naming T-23, got %v", err)
 	}
 }
 
