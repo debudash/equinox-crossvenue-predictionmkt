@@ -1,0 +1,8 @@
+{
+  "description": "Testkit self-test: each fault the manifest can declare.",
+  "routes": [
+    {"path": "/v1/slow", "fault": "timeout"},
+    {"path": "/v1/broken", "fault": "http_500"},
+    {"path": "/v1/garbled", "file": "markets.json", "fault": "malformed_json"}
+  ]
+}
