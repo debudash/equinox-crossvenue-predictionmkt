@@ -19,6 +19,7 @@ A simulation that fetches Kalshi and Polymarket markets, stores each as one mark
 ```
 make setup      # go mod download
 make test       # go test ./... -count=1 (adds -race when cgo is available)
+make race       # go test -race in a Linux container (Docker), for hosts without cgo
 make lint       # go vet + staticcheck
 make guard      # fails if a venue name, a clock read, or a network import appears in matcher or router
 make acceptance # runs the 20 required tests by name and prints pass/fail per test number, then the amendment tests W1-W11

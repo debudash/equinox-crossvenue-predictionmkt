@@ -31,6 +31,6 @@
 | A-11 | Polymarket US: market_id is the slug; NO buy price = 1 minus best YES bid (one instrument per market); prices are decimal dollar strings, not integer encoded (differs from A-3); deadline from the rules sentence in ET; fee empty (per-fill rounding and tiered rebates); scope is the macro category filtered to "federal funds rate" | D-18 decision |
 | A-12 | Polymarket US unclear_result is empty (D-20): no Fed-specific fallback clause found in the market rules, filed contract terms or PMUS Rulebook as of 2026-10-10. The venue's general docs (settle at $1 or $0) are not treated as a contract-specific source. Limitation: `yes_or_no_only` does not record which way an unclear result falls | A Fed clause is found in the PMUS Rulebook or a CFTC filing |
 | Q-2 | Closed 2026-10-10: `equinox unlock --holder <name>` added | - | - |
-| Q-3 | Closed 2026-10-10: .gitlab-ci.yml added | - | - |
+| Q-3 | Closed 2026-10-10: .gitlab-ci.yml added, then switched off the same day (no runner on the project; pipelines failed as stuck_pending_no_matching_runners). Checks run locally with make test lint guard | - | - |
 | Q-4 | Closed 2026-10-10: D-19 (ship the honest result plus a labelled synthetic pair) and D-20 (unclear_result from contract terms only) | - | - |
 | Q-5 | Where is the PMUS Rulebook text that governs a Fed contract whose outcome cannot be determined? | Owner or T-30 | Polymarket US unclear_result stays empty |
