@@ -27,9 +27,15 @@ type Post struct {
 	Score    string // summed volume_24h, or "-" when no market reported one
 	Badges   []string
 	Markets  []Market
+	// PricesSaved is the newest priced_at among the post's markets, or "".
+	PricesSaved string
+	// OutOfVocab is true when no market in the post has a subject in the
+	// shared vocabulary, so none of them can ever match.
+	OutOfVocab bool
 
 	volume  *big.Rat // nil when unknown
 	closing time.Time
+	priced  time.Time
 }
 
 // Market is one comment under a post.
@@ -39,13 +45,16 @@ type Market struct {
 	Badge   string
 	Fields  []card.Field
 	Bot     []BotLine
-	Others  []BotLine // not_same records, folded away when there are many
+	Others  []BotLine // not_same records not shown in Bot, folded away
+	Refused bool      // the bot reply holds a refusal (not_same or no_route)
 }
 
 // Price is a saved buy price for one side, ready to show.
 type Price struct {
 	Value    string // "-" when unknown
 	PricedAt string
+
+	at time.Time
 }
 
 // BotLine is one decision log record shown verbatim under a market.
@@ -56,6 +65,20 @@ type BotLine struct {
 	Refused   bool   // not_same or no_route
 	Other     string // the market on the other side of the pair
 	DecidedAt string
+
+	shared int // payoff fields set and equal on both cards, for display order
+}
+
+// sharedFields counts payoff fields that are set and equal on both cards.
+func sharedFields(a, b card.Card) int {
+	n := 0
+	fb := b.Payoff.Fields()
+	for i, f := range a.Payoff.Fields() {
+		if f.Set && fb[i].Set && f.Value == fb[i].Value {
+			n++
+		}
+	}
+	return n
 }
 
 // buildPosts groups a snapshot's cards into posts in a fixed base order
@@ -64,8 +87,10 @@ func buildPosts(s *cache.Snapshot) []*Post {
 	byKey := map[string]*Post{}
 	var order []string
 	titles := map[card.MarketRef]string{}
+	cards := map[card.MarketRef]card.Card{}
 	for _, c := range s.Cards() {
 		titles[c.Ref()] = c.Record.Title
+		cards[c.Ref()] = c
 	}
 	for _, c := range s.Cards() {
 		event := c.Record.EventTitle
@@ -80,7 +105,7 @@ func buildPosts(s *cache.Snapshot) []*Post {
 			byKey[key] = p
 			order = append(order, key)
 		}
-		p.Markets = append(p.Markets, buildMarket(s, c, titles))
+		p.Markets = append(p.Markets, buildMarket(s, c, titles, cards))
 	}
 	sort.Strings(order)
 	posts := make([]*Post, 0, len(order))
@@ -92,7 +117,7 @@ func buildPosts(s *cache.Snapshot) []*Post {
 	return posts
 }
 
-func buildMarket(s *cache.Snapshot, c card.Card, titles map[card.MarketRef]string) Market {
+func buildMarket(s *cache.Snapshot, c card.Card, titles map[card.MarketRef]string, cards map[card.MarketRef]card.Card) Market {
 	m := Market{Card: c, Fields: c.Payoff.Fields()}
 	m.Yes, m.No = price(s, c.Ref(), card.Yes), price(s, c.Ref(), card.No)
 	for _, rec := range s.Matches(c.Ref()) {
@@ -105,7 +130,7 @@ func buildMarket(s *cache.Snapshot, c card.Card, titles map[card.MarketRef]strin
 			name += " (" + t + ")"
 		}
 		line := BotLine{Label: "Match", Code: string(rec.Match), Reason: rec.Reason, Other: name,
-			Refused: rec.Match == card.NotSame, DecidedAt: stamp(rec.DecidedAt)}
+			Refused: rec.Match == card.NotSame, DecidedAt: stamp(rec.DecidedAt), shared: sharedFields(c, cards[other])}
 		if line.Refused {
 			m.Others = append(m.Others, line)
 			continue
@@ -116,11 +141,32 @@ func buildMarket(s *cache.Snapshot, c card.Card, titles map[card.MarketRef]strin
 		m.Bot = append(m.Bot, line)
 		// Routes are shown only while the pair's latest match is same or
 		// opposite; an older route for a pair that no longer matches is stale.
-		for _, rt := range s.Routes(rec.MarketA, rec.MarketB) {
-			m.Bot = append(m.Bot, BotLine{
-				Label: string(rt.SideA) + " (on " + rt.MarketA.String() + ")", Code: string(rt.Action),
+		// Yes before no, as the wireframe shows; the log orders sides alphabetically.
+		routes := append([]card.LogRecord(nil), s.Routes(rec.MarketA, rec.MarketB)...)
+		sort.SliceStable(routes, func(i, j int) bool { return routes[i].SideA == card.Yes && routes[j].SideA != card.Yes })
+		for _, rt := range routes {
+			// The requested side is stated relative to the reference venue's
+			// card (market_a); on the other card the label says so.
+			label := capitalize(string(rt.SideA))
+			if c.Ref() != rt.MarketA {
+				label = VenueName(rt.MarketA.Venue) + " " + string(rt.SideA)
+			}
+			m.Bot = append(m.Bot, BotLine{Label: label, Code: string(rt.Action),
 				Reason: rt.Reason, Refused: rt.Action == card.NoRoute, DecidedAt: stamp(rt.DecidedAt)})
 		}
+	}
+	// Show the closest refusal first: the one whose two cards share the most
+	// set payoff fields. This orders the display only; it decides nothing.
+	sort.SliceStable(m.Others, func(i, j int) bool {
+		return m.Others[i].shared > m.Others[j].shared
+	})
+	// With no same or opposite match, the first refusal is the reply and the
+	// rest fold away, so a market compared with hundreds of others stays short.
+	if len(m.Bot) == 0 && len(m.Others) > 0 {
+		m.Bot, m.Others = m.Others[:1], m.Others[1:]
+	}
+	for _, b := range m.Bot {
+		m.Refused = m.Refused || b.Refused
 	}
 	return m
 }
@@ -130,7 +176,7 @@ func price(s *cache.Snapshot, ref card.MarketRef, side card.Side) Price {
 	if !ok {
 		return Price{Value: "-", PricedAt: "-"}
 	}
-	out := Price{Value: "-", PricedAt: stamp(p.PricedAt)}
+	out := Price{Value: "-", PricedAt: stamp(p.PricedAt), at: p.PricedAt}
 	if v, ok := p.BuyPrice.Get(); ok {
 		out.Value = v.String()
 	}
@@ -140,7 +186,16 @@ func price(s *cache.Snapshot, ref card.MarketRef, side card.Side) Price {
 // finishPost sets the score, badges and closing time from the post's markets.
 func finishPost(p *Post, now time.Time) {
 	seen := map[string]bool{}
+	p.OutOfVocab = true
 	for _, m := range p.Markets {
+		if !m.Card.Payoff.Subject.IsEmpty() {
+			p.OutOfVocab = false
+		}
+		for _, at := range []time.Time{m.Yes.at, m.No.at} {
+			if at.After(p.priced) {
+				p.priced = at
+			}
+		}
 		if m.Badge != "" && !seen[m.Badge] {
 			seen[m.Badge] = true
 			p.Badges = append(p.Badges, m.Badge)
@@ -158,6 +213,9 @@ func finishPost(p *Post, now time.Time) {
 				p.closing = t
 			}
 		}
+	}
+	if !p.priced.IsZero() {
+		p.PricesSaved = stamp(p.priced)
 	}
 	p.Score = "-"
 	if p.volume != nil {
@@ -230,11 +288,22 @@ func filterSort(all []*Post, venue, category, order string) []*Post {
 func badge(r card.Result, otherVenue string) string {
 	switch r {
 	case card.Same:
-		return "Same bet on " + otherVenue
+		return "Same bet on " + VenueName(otherVenue)
 	case card.Opposite:
-		return "Opposite bet on " + otherVenue
+		return "Opposite bet on " + VenueName(otherVenue)
 	}
 	return ""
+}
+
+// VenueName is a venue value for display, e.g. "kalshi" -> "Kalshi". It is
+// derived from the data, not from a list of venues.
+func VenueName(v string) string { return capitalize(v) }
+
+func capitalize(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
 }
 
 // stamp formats a time for display in UTC, or "-" when unknown.
