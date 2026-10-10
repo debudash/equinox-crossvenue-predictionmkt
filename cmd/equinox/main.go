@@ -8,6 +8,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"slices"
 
 	"github.com/spf13/cobra"
 )
@@ -42,6 +43,11 @@ func newRoot() *cobra.Command {
 			continue
 		}
 		root.AddCommand(stubCommand(s.name, s.short, s.owner))
+	}
+	for name, cmd := range registered {
+		if !slices.ContainsFunc(stubs, func(s struct{ name, short, owner string }) bool { return s.name == name }) {
+			root.AddCommand(cmd)
+		}
 	}
 	return root
 }

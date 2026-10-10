@@ -1,0 +1,10 @@
+{
+  "description": "Fault: the Polymarket US markets list answers HTTP 500.",
+  "routes": [
+    {
+      "path": "/v1/markets",
+      "query": "categories=macro&active=true&closed=false&limit=100&offset=0",
+      "fault": "http_500"
+    }
+  ]
+}

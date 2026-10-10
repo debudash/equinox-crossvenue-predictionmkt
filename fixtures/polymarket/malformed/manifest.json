@@ -1,0 +1,18 @@
+{
+  "description": "Hand-built from the real fed recording of 2026-10-10: one good Fed market, one broken record (id is an object, marketSides is a string), one out-of-vocabulary record (settled by the Federal Reserve Bank of New York, not in vocab.yaml deciders), and one non-Fed macro market (outside V1 scope).",
+  "routes": [
+    {
+      "path": "/v1/markets",
+      "query": "categories=macro&active=true&closed=false&limit=100&offset=0",
+      "file": "markets.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte3pt50/book",
+      "file": "book_good.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-oov-2027-12-31-gte3pt75/book",
+      "file": "book_oov.json"
+    }
+  ]
+}

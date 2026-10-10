@@ -8,7 +8,14 @@ fixtures/<venue>/<scenario>/
   manifest.json      which file answers which request
   <response files>   raw bodies exactly as the venue returned them
 ```
-Examples: `fixtures/kalshi/fed/`, `fixtures/polymarket/fed/` (test 16), `fixtures/faults/...` (T-22).
+Scenarios in this repo:
+| Scenario | Kind |
+|---|---|
+| `kalshi/fed`, `polymarket/fed` | Real, recorded 2026-10-10. No exact cross-venue pair exists in them (decision D-19) |
+| `kalshi/malformed`, `polymarket/malformed` | Real records, hand-edited to break one record each |
+| `kalshi/synthetic`, `polymarket/synthetic` | SYNTHETIC, hand-built for tests 16 and 19 and the demo: one same pair and one opposite pair |
+| `faults/polymarket/counterpart_27jan`, `faults/polymarket/oov_decider` | SYNTHETIC one-field variants for test 17 |
+| `*/http_500`, `*/timeout`, `*/malformed_json`, `polymarket/rate_limited` | Fault scenarios |
 
 Each venue directory is owned by its fetcher task (T-10 owns `fixtures/kalshi/**`, T-11 owns `fixtures/polymarket/**`, T-22 owns `fixtures/faults/**`). Response files are saved byte-for-byte; do not reformat them. The repo keeps line endings as committed (`core.autocrlf=false` locally), so hashes match on every machine.
 

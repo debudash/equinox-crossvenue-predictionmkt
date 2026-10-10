@@ -1,0 +1,15 @@
+{
+  "description": "SYNTHETIC, not recorded. Hand-built for required tests 16 and 19 and the routing demo (decision D-19): the real KXFED-26DEC event recorded 2026-10-10 cut to markets T3.75 and T4.00, with the T3.75 top of book hand-set (yes ask 0.96, no ask 0.05). KXFEDFUNDSYEAR returns no events.",
+  "routes": [
+    {
+      "path": "/trade-api/v2/events",
+      "query": "series_ticker=KXFED&status=open&with_nested_markets=true&limit=200",
+      "file": "events_kxfed.json"
+    },
+    {
+      "path": "/trade-api/v2/events",
+      "query": "series_ticker=KXFEDFUNDSYEAR&status=open&with_nested_markets=true&limit=200",
+      "file": "events_empty.json"
+    }
+  ]
+}

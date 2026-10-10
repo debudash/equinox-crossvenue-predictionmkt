@@ -1,0 +1,8 @@
+{
+  "description": "Real open Kalshi Federal Reserve rate markets (series KXFED and KXFEDFUNDSYEAR) recorded 2026-10-10T02:25Z from the public market data API, unchanged. markets_prices.json is the price refresh for two of them.",
+  "routes": [
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFED&status=open&with_nested_markets=true&limit=200", "file": "events_kxfed.json"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFEDFUNDSYEAR&status=open&with_nested_markets=true&limit=200", "file": "events_kxfedfundsyear.json"},
+    {"path": "/trade-api/v2/markets", "query": "tickers=KXFED-26DEC-T3.75,KXFEDFUNDSYEAR-28JAN01-T4.00", "file": "markets_prices.json"}
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "description": "The KXFED request fails with HTTP 500; the KXFEDFUNDSYEAR request returns no events.",
+  "routes": [
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFED&status=open&with_nested_markets=true&limit=200", "fault": "http_500"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFEDFUNDSYEAR&status=open&with_nested_markets=true&limit=200", "file": "events_empty.json"}
+  ]
+}
