@@ -35,6 +35,10 @@ type Fetcher struct {
 	client  *http.Client
 	clock   func() time.Time
 
+	// Display is the display-only scope (config
+	// fetchers.polymarket.display_categories, see display.go). Empty by default.
+	Display []DisplayCategory
+
 	// gap and sleep pace requests; tests set gap to 0 and sleep to a no-op.
 	gap   time.Duration
 	sleep func(ctx context.Context, d time.Duration) error
@@ -82,7 +86,7 @@ func (f *Fetcher) Fetch(ctx context.Context, st *store.Store, cycleID int64) (st
 			venueErr = verr
 			break
 		}
-		cards, skips, n, outOfScope, perr := normalizeMarkets(raw, f.vocab)
+		cards, _, skips, n, outOfScope, perr := normalizeMarkets(raw, f.vocab)
 		if perr != nil {
 			venueErr = perr
 			break
@@ -113,6 +117,12 @@ func (f *Fetcher) Fetch(ctx context.Context, st *store.Store, cycleID int64) (st
 	}
 	if venueErr == nil {
 		if err := r.books(ctx, slugs); err != nil {
+			return store.FetchRun{}, err
+		}
+	}
+	// Display-only categories come after the Fed page and never fail the run.
+	for _, dc := range f.Display {
+		if err := r.display(ctx, dc); err != nil {
 			return store.FetchRun{}, err
 		}
 	}

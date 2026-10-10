@@ -38,7 +38,8 @@ const (
 	maxBody = 64 << 20
 )
 
-// series is the fetch scope, in request order: Federal Reserve rate markets.
+// series is the matching scope, in request order: Federal Reserve rate
+// markets. Display-only series (Fetcher.Display) are fetched after them.
 var series = []string{"KXFED", "KXFEDFUNDSYEAR"}
 
 // ErrTimeout marks a request that ran past its timeout.
@@ -55,7 +56,8 @@ func (e *HTTPError) Error() string {
 	return fmt.Sprintf("kalshi: %s returned HTTP %d: %s", e.Endpoint, e.StatusCode, e.Body)
 }
 
-// Fetcher downloads Kalshi Fed markets and prices.
+// Fetcher downloads Kalshi Fed markets and prices, plus the configured
+// display-only categories.
 type Fetcher struct {
 	base   string
 	vocab  *card.Vocab
@@ -63,6 +65,13 @@ type Fetcher struct {
 	clock  func() time.Time
 	// Timeout bounds each request; New sets DefaultTimeout.
 	Timeout time.Duration
+	// Display is the display-only scope (config
+	// fetchers.kalshi.display_categories, see display.go). Empty by default.
+	Display []DisplayCategory
+	// DisplayGap paces display requests; New sets 200 ms, tests set 0.
+	DisplayGap time.Duration
+	// sleep waits between display requests and before a 429 retry.
+	sleep func(ctx context.Context, d time.Duration) error
 }
 
 // New builds a fetcher. client is injected (tests pass testkit transports);
@@ -75,7 +84,8 @@ func New(cfg card.FetcherConfig, vocab *card.Vocab, client *http.Client, clock f
 	if client == nil {
 		client = &http.Client{}
 	}
-	return &Fetcher{base: base, vocab: vocab, client: client, clock: clock, Timeout: DefaultTimeout}
+	return &Fetcher{base: base, vocab: vocab, client: client, clock: clock, Timeout: DefaultTimeout,
+		DisplayGap: defaultDisplayGap, sleep: sleepCtx}
 }
 
 // Name returns the venue.
@@ -101,6 +111,12 @@ func (f *Fetcher) Fetch(ctx context.Context, st *store.Store, cycleID int64) (st
 	var t tally
 	for _, s := range series {
 		if err := f.fetchSeries(ctx, st, cycleID, runID, s, &t); err != nil {
+			return store.FetchRun{}, err
+		}
+	}
+	// Display-only categories come after the Fed series and never fail the run.
+	for _, dc := range f.Display {
+		if err := f.fetchDisplay(ctx, st, cycleID, runID, dc, &t); err != nil {
 			return store.FetchRun{}, err
 		}
 	}

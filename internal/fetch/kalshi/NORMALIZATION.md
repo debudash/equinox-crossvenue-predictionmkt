@@ -12,6 +12,17 @@ Every choice below is also commented next to the code that makes it (normalize.g
 - Price refresh (watch price loop): `GET /markets?tickers=<a,b,...>`, up to 100 tickers per request, saved as kind `prices`. A requested market the venue does not return is recorded as a skip.
 - Each request has its own timeout (20 s default, `Fetcher.Timeout`).
 
+## Display-only categories (fetched, never matched)
+Added 2026-10-10 so the feed shows a real multi-category venue. Code: display.go and the display branch of `normalizeMarket`.
+- Config: `fetchers.kalshi.display_categories` in config/equinox.yaml, a list of `{name, series, max_events, events_per_series}`. `card.FetcherConfig` is a frozen contract that holds only `source` and `base_url`, so this package parses its own section of the same file (`ParseDisplay`) and `registry.LoadDisplay` hands it to the fetcher; `equinox fetch` and `equinox watch` call it. No list means no display fetch (every test fixture and the acceptance harness). A Fed series in the list is refused.
+- Choice of series: Kalshi has no category filter on `/events`, so the config lists series per category. They were ranked by lifetime series volume (`GET /series?category=<c>&include_volume=true`) and kept only if they had open events on 2026-10-10. Fed series (and KXFEDDECISION) are left out. Series close over time; a series with no open events simply saves nothing.
+- Request: `GET /events?series_ticker=<s>&status=open&with_nested_markets=true&limit=<n>`, one per series, in config order, where n = min(events_per_series, events left in the category). Kalshi lists open events soonest first in practice, so these are the next events to settle. `limit` is in the saved endpoint, so the raw response holds exactly what was normalized and rebuild reproduces it without config. Requests stop when the category has `max_events` events (defaults: 10, and events_per_series = max_events).
+- A series that still has a cursor gets one skip: "only the first n open events fetched (display bound)".
+- Pacing: display requests are 200 ms apart (`Fetcher.DisplayGap`), and HTTP 429 is retried after 1 s, 2 s, 4 s. The two Fed requests are unchanged (no pacing, no retry).
+- Failures: a display request that fails (network, timeout, non-200, body does not parse) is one skip with the reason and the next series is fetched. It never marks the run failed, so a display hiccup cannot fail the Fed fetch.
+- Payoff fields: every field is empty except `deadline`. Subject, cutoff, unit, decider and unclear_result have no rule for these series, and the decider is left empty even when a settlement source would map, so the matcher (which needs a subject) never pairs a display card. `deadline` is the market `close_time` (when trading stops), for the feed's "Closing soon" sort only; it is not checked against the rules text like the Fed series. A close_time that does not parse leaves it empty.
+- Record fields and prices: the same rules as the Fed series (title, rules_text, event_title, `category` as the event's own string such as `Climate and Weather`, `volume_24h_fp`, series url; yes and no asks from the nested market, 0 and 1 stored empty, fee empty). Multivariate and non-binary markets are skipped as before.
+
 ## Raw responses
 - Every 200 response is saved byte for byte with `st.Raw.Save` before it is parsed, including one that then fails to parse.
 - A non-200 response is not saved as a raw response (it holds no market data and would only add noise to rebuild); its status and the first 200 bytes of its body go in the run's error text.
@@ -20,7 +31,7 @@ Every choice below is also commented next to the code that makes it (normalize.g
 ## Payoff fields
 | Field | Rule |
 |---|---|
-| subject | `fed_funds_upper_bound` for the two series above, set only when `rules_primary` contains "upper bound of the target". Any other series: empty. Then filtered through vocab.yaml. |
+| subject | `fed_funds_upper_bound` for the two series above, set only when `rules_primary` contains "upper bound of the target". Any other series (display-only): empty, like every payoff field but the display deadline. Then filtered through vocab.yaml. |
 | cutoff_op | From `strike_type`: `greater` to `gt`, `greater_or_equal` to `gte`, `less` to `lt`, `less_or_equal` to `lte`. Any other strike type (`between`, `structured`, `custom`, ...): empty. Every Fed market seen live is `greater` ("above X%"), so every Kalshi Fed card is `gt`. |
 | cutoff_value | `floor_strike` for greater types, `cap_strike` for less types, read as a JSON number token (never float64) and passed through `card.ParseDecimal`, e.g. `3.75`, `4`. A missing strike or one with an exponent stays empty. |
 | cutoff_unit | `percent` for both series (the rules state the threshold in percent), filtered through vocab.yaml. |

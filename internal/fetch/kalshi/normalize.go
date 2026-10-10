@@ -12,9 +12,11 @@ import (
 	"equinox/internal/store"
 )
 
-// seriesRule holds the payoff choices for one Kalshi series. Only series listed
-// in fedSeries are fetched, and only their markets get a subject, a decider and
-// a unit. Every entry is documented in NORMALIZATION.md.
+// seriesRule holds the payoff choices for one Kalshi series. Only markets of
+// series listed in fedSeries get payoff fields (subject, cutoff, decider,
+// unit, unclear_result). Display-only series from config are fetched too, but
+// their cards keep every payoff field empty except a display deadline (see
+// normalizeMarket). Every entry is documented in NORMALIZATION.md.
 type seriesRule struct {
 	subject string // vocab subject, set only when rules_primary contains subjectPhrase
 	unit    string // vocab cutoff unit
@@ -199,6 +201,25 @@ func normalizeMarket(raw store.Raw, vocab *card.Vocab, ev wireEvent, m wireMarke
 	}
 	p := &c.Payoff
 
+	rule, inScope := fedSeries[ev.SeriesTicker]
+	if !inScope {
+		// Display-only series (config fetchers.kalshi.display_categories, or
+		// any other series): every payoff field stays empty except the
+		// deadline, so the card can never match (precision over recall). No
+		// subject, cutoff, decider or unclear_result rule exists for these
+		// series, and the decider is left empty even when the settlement
+		// source would map, so a non-Fed card never carries a Fed field.
+		//
+		// deadline: the market close_time, the time trading stops, for the
+		// feed's "Closing soon" sort only. It is not checked against the
+		// rules text the way the Fed series are. A value that does not
+		// parse leaves the deadline empty instead of skipping a display card.
+		if d, err := card.CheckDeadline(m.CloseTime); m.CloseTime != "" && err == nil {
+			p.Deadline = card.Some(d)
+		}
+		return c, ps, ""
+	}
+
 	// Cutoff: operator from strike_type, value from the matching strike field.
 	if rule, ok := strikeOps[m.StrikeType]; ok {
 		p.CutoffOp = card.Some(rule.op)
@@ -216,11 +237,6 @@ func normalizeMarket(raw store.Raw, vocab *card.Vocab, ev wireEvent, m wireMarke
 	// Decider: every listed settlement source must map to the same decider.
 	p.Decider = vocab.Decider(decider(ev))
 
-	rule, inScope := fedSeries[ev.SeriesTicker]
-	if !inScope {
-		// Out of scope series: no subject, unit, deadline or unclear_result rule exists.
-		return c, ps, ""
-	}
 	// unclear_result comes from the series' contract terms, not the API rules
 	// text, which never covers it. See fedSeries and NORMALIZATION.md.
 	p.UnclearResult = rule.unclear

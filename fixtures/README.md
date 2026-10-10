@@ -15,6 +15,7 @@ Scenarios in this repo:
 | `kalshi/malformed`, `polymarket/malformed` | Real records, hand-edited to break one record each |
 | `kalshi/synthetic`, `polymarket/synthetic` | SYNTHETIC, hand-built for tests 16 and 19 and the demo: one same pair and one opposite pair |
 | `faults/polymarket/counterpart_27jan`, `faults/polymarket/oov_decider` | SYNTHETIC one-field variants for test 17 |
+| `kalshi/categories`, `polymarket/categories` | Display-only categories, real, recorded 2026-10-10. Their Fed routes reuse the `../synthetic` files (a manifest `file` may point into a sibling scenario), so a match run has a Fed pair next to the display cards. `KXBROKEN` is an http_500 fault |
 | `*/http_500`, `*/malformed_json`, `kalshi/timeout`, `polymarket/rate_limited` | Fault scenarios |
 
 Each venue directory is owned by its fetcher task (T-10 owns `fixtures/kalshi/**`, T-11 owns `fixtures/polymarket/**`, T-22 owns `fixtures/faults/**`). Response files are saved byte-for-byte; do not reformat them. The repo keeps line endings as committed (`core.autocrlf=false` locally), so hashes match on every machine.

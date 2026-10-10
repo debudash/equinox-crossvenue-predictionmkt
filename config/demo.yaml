@@ -2,6 +2,8 @@
 venues:
   allowed: [kalshi, polymarket]   # any other venue value in saved data is skipped as inconsistent
 fetchers:
+  # No display_categories here: the demo database is SYNTHETIC (scripts/seed) and never
+  # fetches. config/equinox.yaml lists the display-only categories for live fetches.
   polymarket:
     source: polymarket_us         # informational; only Polymarket US is implemented (D-19)
     base_url: https://gateway.polymarket.us   # public market data API, no key (see internal/fetch/polymarket/NORMALIZATION.md)

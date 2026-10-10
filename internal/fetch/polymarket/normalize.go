@@ -51,25 +51,27 @@ type slugOnly struct {
 // skips. It is pure: no clock, no network, so rebuild reproduces the same
 // cards from the same raw response.
 //
-// Prices: the markets payload carries no executable ask. marketSides[].price
-// and outcomePrices are display prices, so this returns no price records;
-// prices come only from the order book (NormalizePrices).
+// Prices: on the Fed (macro) page the markets payload is not used for prices
+// (marketSides[].price and outcomePrices are display prices), so this returns
+// no price records; Fed prices come only from the order book (NormalizePrices).
+// On a display-only page it returns the listing's best quotes (displayPrices).
 func NormalizeMarkets(raw store.Raw, vocab *card.Vocab) (cards []card.Card, prices []card.PriceRecord, skips []store.Skip) {
-	cards, skips, _, _, err := normalizeMarkets(raw, vocab)
+	cards, prices, skips, _, _, err := normalizeMarkets(raw, vocab)
 	if err != nil {
 		skips = append(skips, skip(raw, "", err.Error()))
 	}
-	return cards, nil, skips
+	return cards, prices, skips
 }
 
 // normalizeMarkets also reports how many records the page held (for
 // pagination), how many were outside V1 scope (summarized in one skip), and
 // whether the page itself failed to parse.
-func normalizeMarkets(raw store.Raw, vocab *card.Vocab) (cards []card.Card, skips []store.Skip, n, outOfScope int, err error) {
+func normalizeMarkets(raw store.Raw, vocab *card.Vocab) (cards []card.Card, prices []card.PriceRecord, skips []store.Skip, n, outOfScope int, err error) {
 	var page marketsPage
 	if err := json.Unmarshal(raw.Body, &page); err != nil {
-		return nil, nil, 0, 0, fmt.Errorf("markets response %s does not parse: %v", raw.Endpoint, err)
+		return nil, nil, nil, 0, 0, fmt.Errorf("markets response %s does not parse: %v", raw.Endpoint, err)
 	}
+	display := isDisplayPage(raw.Endpoint)
 	for _, rec := range page.Markets {
 		var m market
 		dec := json.NewDecoder(bytes.NewReader(rec))
@@ -79,6 +81,21 @@ func normalizeMarkets(raw store.Raw, vocab *card.Vocab) (cards []card.Card, skip
 			var s slugOnly
 			_ = json.Unmarshal(rec, &s)
 			skips = append(skips, skip(raw, s.Slug, "malformed market record: "+err.Error()))
+			continue
+		}
+		// Display-only page (fetchers.polymarket.display_categories): every
+		// record becomes a display card with empty payoff fields; nothing is
+		// out of scope there. See display.go.
+		if display {
+			c, reason := displayCard(m, raw)
+			if reason != "" {
+				skips = append(skips, skip(raw, m.Slug, reason))
+				continue
+			}
+			cards = append(cards, c)
+			ps, ks := displayPrices(rec, m.Slug, raw)
+			prices = append(prices, ps...)
+			skips = append(skips, ks...)
 			continue
 		}
 		// V1 scope: only markets whose rules mention the federal funds rate.
@@ -99,7 +116,7 @@ func normalizeMarkets(raw store.Raw, vocab *card.Vocab) (cards []card.Card, skip
 	if outOfScope > 0 {
 		skips = append(skips, skip(raw, "", fmt.Sprintf("%d %s", outOfScope, outOfScopeReason)))
 	}
-	return cards, skips, len(page.Markets), outOfScope, nil
+	return cards, prices, skips, len(page.Markets), outOfScope, nil
 }
 
 const outOfScopeReason = "markets outside V1 scope (rules do not mention the federal funds rate)"
