@@ -261,19 +261,14 @@ func deadlineOf(rules string) card.Opt[card.Instant] {
 	return card.Some(out)
 }
 
-// unclearResultOf: Polymarket US documents that every contract settles at
-// $1.00 or $0.00 and that any alternative settlement (50-50, last fair market
-// price) is written in the market's own rules (docs.polymarket.us, "Market
-// Rules" and "Market Settlement"). So rules with no alternative-settlement
-// wording settle yes or no only. Rules that mention any alternative are left
-// empty rather than guessed.
-var alternativeSettlement = regexp.MustCompile(`(?i)50-50|\$0\.50|fair market price|last price|cancel|void|split|refund`)
-
-func unclearResultOf(rules string) card.Opt[card.UnclearResult] {
-	if rules == "" || alternativeSettlement.MatchString(rules) {
-		return card.None[card.UnclearResult]()
-	}
-	return card.Some(card.YesOrNoOnly)
+// unclearResultOf: always empty (owner decision D-20). Polymarket US Fed
+// market rules never say what is paid if the outcome cannot be determined, and
+// no Fed-specific clause was found in the filed contract terms or the PMUS
+// Rulebook. The venue's general docs say contracts settle at $1.00 or $0.00,
+// but a payoff field is filled only from a source tied to that contract, so
+// unknown stays empty and never matches.
+func unclearResultOf(string) card.Opt[card.UnclearResult] {
+	return card.None[card.UnclearResult]()
 }
 
 // bookResponse is GET /v1/markets/{slug}/book.

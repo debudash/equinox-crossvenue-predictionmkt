@@ -20,6 +20,9 @@ type seriesRule struct {
 	unit    string // vocab cutoff unit
 	// deadline picks the venue time that is the moment the outcome is read.
 	deadline func(ev wireEvent, m wireMarket) string
+	// unclear is set only from the series' filed contract terms (the API rules
+	// text never says). Empty means the terms leave payouts to Kalshi's discretion.
+	unclear card.Opt[card.UnclearResult]
 }
 
 // subjectPhrase must appear in rules_primary before the subject is set, so a
@@ -33,11 +36,24 @@ var fedSeries = map[string]seriesRule{
 	// that moment (2:00 PM ET, e.g. 2026-12-09T19:00:00Z), while the market
 	// close_time is 5 minutes earlier and expected_expiration_time 5 minutes
 	// later, so strike_date is the deadline.
+	//
+	// unclear_result: the series' contract terms (contract_terms_url
+	// https://assets.kalshi.com/contract_terms/FED.pdf, Rule 100.5, Payout
+	// Criterion) say "If no data is available on the Expiration Date at the
+	// Expiration Time, the Contract resolves to No." The contract pays $1 or $0
+	// only, so yes_or_no_only.
 	"KXFED": {subject: "fed_funds_upper_bound", unit: "percent",
-		deadline: func(ev wireEvent, _ wireMarket) string { return ev.StrikeDate }},
+		deadline: func(ev wireEvent, _ wireMarket) string { return ev.StrikeDate },
+		unclear:  card.Some(card.YesOrNoOnly)},
 	// KXFEDFUNDSYEAR: "upper bound ... in effect at 11:59 PM ET on December 31".
 	// The event has no strike_date; the market close_time is exactly that
 	// moment (e.g. 2028-01-01T04:59:00Z), so close_time is the deadline.
+	//
+	// unclear_result: empty. The series' contract terms
+	// (https://assets.kalshi.com/contract_terms/ECONSTAT.pdf, Contingencies) say
+	// "If an Expiration Value cannot be determined on the Expiration Date,
+	// Kalshi has the right to determine payouts pursuant to Rule 6.3(b)", so
+	// the payout in that case is discretionary, not yes or no only.
 	"KXFEDFUNDSYEAR": {subject: "fed_funds_upper_bound", unit: "percent",
 		deadline: func(_ wireEvent, m wireMarket) string { return m.CloseTime }},
 }
@@ -200,16 +216,14 @@ func normalizeMarket(raw store.Raw, vocab *card.Vocab, ev wireEvent, m wireMarke
 	// Decider: every listed settlement source must map to the same decider.
 	p.Decider = vocab.Decider(decider(ev))
 
-	// unclear_result: no sentence in Kalshi Fed rules (rules_primary,
-	// rules_secondary) says what is paid if the result is unclear, cancelled
-	// or split, so it is always empty. See NORMALIZATION.md.
-	p.UnclearResult = card.None[card.UnclearResult]()
-
 	rule, inScope := fedSeries[ev.SeriesTicker]
 	if !inScope {
-		// Out of scope series: no subject, unit or deadline rule exists.
+		// Out of scope series: no subject, unit, deadline or unclear_result rule exists.
 		return c, ps, ""
 	}
+	// unclear_result comes from the series' contract terms, not the API rules
+	// text, which never covers it. See fedSeries and NORMALIZATION.md.
+	p.UnclearResult = rule.unclear
 	if strings.Contains(strings.ToLower(m.RulesPrimary), subjectPhrase) {
 		p.Subject = vocab.Subject(rule.subject)
 	}

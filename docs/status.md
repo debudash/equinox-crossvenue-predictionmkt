@@ -1,6 +1,6 @@
 # Status
 
-Current wave: 1 (built on branch wave-1; stopped at the D-18 gate, which failed)
+Current wave: 2 (Wave 1 on branch wave-1, MR !4; D-18 resolved by D-19 and D-20)
 
 ## Log
 - 2026-10-07: Planning pack generated.
@@ -20,3 +20,4 @@ Current wave: 1 (built on branch wave-1; stopped at the D-18 gate, which failed)
 - 2026-10-10: T-12 matcher and T-13 router in review on wave-1; tests 1-15 pass.
 - 2026-10-10: T-10 Kalshi fetcher (KXFED + KXFEDFUNDSYEAR) and T-11 Polymarket US fetcher in review on wave-1. Real Fed fixtures recorded 2026-10-10T02:25Z.
 - 2026-10-10: D-18 gate FAILED. Polymarket US has Fed thresholds only for year end 2027, worded "greater than or equal to X%" (gte); Kalshi words every Fed market "above X%" (gt) and lists no lt. gt X vs gte X is not_same (test 5), and no exact complement exists. unclear_result is also set differently (Kalshi empty, Polymarket yes_or_no_only). Stopped for owner decision.
+- 2026-10-10: Owner chose D-19 (ship the honest result plus a labelled synthetic pair) and D-20 (unclear_result only from contract terms). Kalshi KXFED now yes_or_no_only citing FED.pdf Rule 100.5; KXFEDFUNDSYEAR stays empty because ECONSTAT.pdf makes the payout discretionary (found while verifying); Polymarket US empty. Gate passes.

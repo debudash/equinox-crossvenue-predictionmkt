@@ -117,7 +117,7 @@ func TestKalshi_Req16_NormalizesFedFixture(t *testing.T) {
 	c := findCard(t, cards, "KXFED-26DEC-T3.75")
 	wantFields(t, c, map[string]string{
 		"subject": "fed_funds_upper_bound", "cutoff_op": "gt", "cutoff_value": "3.75", "cutoff_unit": "percent",
-		"deadline": "2026-12-09T19:00:00Z", "decider": "federal_reserve", "unclear_result": "",
+		"deadline": "2026-12-09T19:00:00Z", "decider": "federal_reserve", "unclear_result": "yes_or_no_only",
 	})
 	if c.Venue != "kalshi" || c.Record.RawRef != "7" || !c.Record.FetchedAt.Equal(testkit.AsOf) {
 		t.Errorf("record fields: venue %q raw_ref %q fetched_at %v", c.Venue, c.Record.RawRef, c.Record.FetchedAt)
@@ -279,7 +279,7 @@ func TestKalshi_Req17_OutOfVocabStoredEmpty(t *testing.T) {
 	// The settlement source "Bank of England" maps to no decider.
 	wantFields(t, c, map[string]string{
 		"subject": "fed_funds_upper_bound", "cutoff_op": "gt", "cutoff_value": "3.75", "cutoff_unit": "percent",
-		"deadline": "2027-01-27T19:00:00Z", "decider": "", "unclear_result": "",
+		"deadline": "2027-01-27T19:00:00Z", "decider": "", "unclear_result": "yes_or_no_only",
 	})
 
 	// A vocabulary without the subject and decider leaves both empty.

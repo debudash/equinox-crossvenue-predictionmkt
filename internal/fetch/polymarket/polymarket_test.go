@@ -98,13 +98,13 @@ func TestPolymarket_Req16_FedFixtureNormalizesThresholdMarket(t *testing.T) {
 	c := cards["rvcus-fedfnds-ondt-2027-12-31-gte3pt50"]
 	require.Equal(t, Venue, c.Venue)
 	require.Equal(t, map[string]string{
-		"subject":        "fed_funds_upper_bound",
-		"cutoff_op":      "gte",
-		"cutoff_value":   "3.5",
-		"cutoff_unit":    "percent",
-		"deadline":       "2028-01-01T04:59:00Z", // December 31, 2027 at 11:59 PM ET (EST, UTC-5)
-		"decider":        "federal_reserve",
-		"unclear_result": "yes_or_no_only",
+		"subject":      "fed_funds_upper_bound",
+		"cutoff_op":    "gte",
+		"cutoff_value": "3.5",
+		"cutoff_unit":  "percent",
+		"deadline":     "2028-01-01T04:59:00Z", // December 31, 2027 at 11:59 PM ET (EST, UTC-5)
+		"decider":      "federal_reserve",
+		// unclear_result is empty (D-20), so fieldMap omits it.
 	}, fieldMap(c))
 	require.Equal(t, "3.50% Or Above", c.Record.Title)
 	require.Equal(t, "Fed Funds Rate at the End of 2027?", c.Record.EventTitle)
@@ -362,6 +362,7 @@ func TestPolymarket_CutoffAndDeadlineParsing(t *testing.T) {
 	require.Equal(t, "2027-07-01T03:59:00Z", d.String(), "EDT is UTC-4")
 	require.True(t, deadlineOf("on June 30, 2027 at 11:59 PM ET or July 1, 2027 at 1:00 PM ET").IsEmpty(), "two moments are ambiguous")
 	require.True(t, unclearResultOf("If the game is canceled, this market will resolve 50-50.").IsEmpty())
+	require.True(t, unclearResultOf("This market will settle to Yes if the upper bound ... Outcome sourced from the United States Federal Reserve.").IsEmpty(), "D-20: silent rules stay empty")
 }
 
 // A 429 is retried with backoff (1s, 2s, 4s), then the run fails without an error return.
