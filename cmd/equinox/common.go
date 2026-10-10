@@ -14,9 +14,10 @@ import (
 
 // env is what every command needs: config, vocabulary and the store.
 type env struct {
-	cfg   *card.Config
-	vocab *card.Vocab
-	st    *store.Store
+	cfgPath string // the --config file, read again for fetcher-only sections
+	cfg     *card.Config
+	vocab   *card.Vocab
+	st      *store.Store
 }
 
 // addConfigFlag adds --config to a command. vocab.yaml is read from the same directory.
@@ -41,7 +42,7 @@ func openEnv(cmd *cobra.Command) (*env, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &env{cfg: cfg, vocab: vocab, st: st}, nil
+	return &env{cfgPath: path, cfg: cfg, vocab: vocab, st: st}, nil
 }
 
 // lockHolder names this process in the run lock, so a refusal says who holds it.

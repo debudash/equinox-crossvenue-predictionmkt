@@ -1,0 +1,13 @@
+{
+  "description": "Display-only categories. The five events_*.json files are real open Kalshi events recorded 2026-10-10T18:49Z from the public market data API with curl, unchanged (KXCPIYOY and KXPAYROLLS: Economics; KXNFLGAME and KXMLBGAME: Sports; KXTRUMPAPPROVE: Politics). The two Fed routes reuse the SYNTHETIC files of ../synthetic (one same and one opposite pair with polymarket/categories), so a match run over this scenario has a Fed pair present. KXBROKEN answers HTTP 500 to show that a failed display series is a skip, not a failed run.",
+  "routes": [
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFED&status=open&with_nested_markets=true&limit=200", "file": "../synthetic/events_kxfed.json"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFEDFUNDSYEAR&status=open&with_nested_markets=true&limit=200", "file": "../synthetic/events_empty.json"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXCPIYOY&status=open&with_nested_markets=true&limit=1", "file": "events_kxcpiyoy.json"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXPAYROLLS&status=open&with_nested_markets=true&limit=1", "file": "events_kxpayrolls.json"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXNFLGAME&status=open&with_nested_markets=true&limit=2", "file": "events_kxnflgame.json"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXMLBGAME&status=open&with_nested_markets=true&limit=1", "file": "events_kxmlbgame.json"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXBROKEN&status=open&with_nested_markets=true&limit=1", "fault": "http_500"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXTRUMPAPPROVE&status=open&with_nested_markets=true&limit=1", "file": "events_kxtrumpapprove.json"}
+  ]
+}

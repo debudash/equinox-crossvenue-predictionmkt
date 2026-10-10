@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -34,6 +35,10 @@ type Fetcher struct {
 	vocab   *card.Vocab
 	client  *http.Client
 	clock   func() time.Time
+
+	// Display is the display-only scope (config
+	// fetchers.polymarket.display_categories, see display.go). Empty by default.
+	Display []DisplayCategory
 
 	// gap and sleep pace requests; tests set gap to 0 and sleep to a no-op.
 	gap   time.Duration
@@ -82,7 +87,7 @@ func (f *Fetcher) Fetch(ctx context.Context, st *store.Store, cycleID int64) (st
 			venueErr = verr
 			break
 		}
-		cards, skips, n, outOfScope, perr := normalizeMarkets(raw, f.vocab)
+		cards, _, skips, n, outOfScope, perr := normalizeMarkets(raw, f.vocab)
 		if perr != nil {
 			venueErr = perr
 			break
@@ -113,6 +118,12 @@ func (f *Fetcher) Fetch(ctx context.Context, st *store.Store, cycleID int64) (st
 	}
 	if venueErr == nil {
 		if err := r.books(ctx, slugs); err != nil {
+			return store.FetchRun{}, err
+		}
+	}
+	// Display-only categories come after the Fed page and never fail the run.
+	for _, dc := range f.Display {
+		if err := r.display(ctx, dc); err != nil {
 			return store.FetchRun{}, err
 		}
 	}
@@ -240,12 +251,19 @@ func (f *Fetcher) download(ctx context.Context, endpoint string) ([]byte, error)
 			}
 		}
 		f.last = time.Now()
-		status, body, err := f.once(ctx, endpoint)
+		status, body, retryAfter, err := f.once(ctx, endpoint)
 		if err != nil {
 			return nil, err
 		}
 		if status == http.StatusTooManyRequests && attempt < maxRetries {
-			if err := f.sleep(ctx, time.Second<<attempt); err != nil {
+			// Back off 1 s, 2 s, 4 s, or longer when the gateway says so:
+			// measured 2026-10-10 it answers 429 with Retry-After: 10, and a
+			// shorter wait just earns another 429.
+			wait := time.Second << attempt
+			if retryAfter > wait {
+				wait = retryAfter
+			}
+			if err := f.sleep(ctx, wait); err != nil {
 				return nil, err
 			}
 			continue
@@ -257,24 +275,32 @@ func (f *Fetcher) download(ctx context.Context, endpoint string) ([]byte, error)
 	}
 }
 
-func (f *Fetcher) once(ctx context.Context, endpoint string) (int, []byte, error) {
+// maxRetryAfter caps a Retry-After wait so one response cannot stall a run.
+const maxRetryAfter = 30 * time.Second
+
+func (f *Fetcher) once(ctx context.Context, endpoint string) (int, []byte, time.Duration, error) {
 	ctx, cancel := context.WithTimeout(ctx, requestTimeout)
 	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, f.baseURL+endpoint, nil)
 	if err != nil {
-		return 0, nil, err
+		return 0, nil, 0, err
 	}
 	req.Header.Set("Accept", "application/json")
 	resp, err := f.client.Do(req)
 	if err != nil {
-		return 0, nil, fmt.Errorf("GET %s: %w", endpoint, err)
+		return 0, nil, 0, fmt.Errorf("GET %s: %w", endpoint, err)
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return 0, nil, fmt.Errorf("GET %s: reading body: %w", endpoint, err)
+		return 0, nil, 0, fmt.Errorf("GET %s: reading body: %w", endpoint, err)
 	}
-	return resp.StatusCode, body, nil
+	// Retry-After in whole seconds, as the gateway sends it; anything else is ignored.
+	var retryAfter time.Duration
+	if n, err := strconv.Atoi(strings.TrimSpace(resp.Header.Get("Retry-After"))); err == nil && n > 0 {
+		retryAfter = min(time.Duration(n)*time.Second, maxRetryAfter)
+	}
+	return resp.StatusCode, body, retryAfter, nil
 }
 
 func excerpt(b []byte) string {
