@@ -1,0 +1,7 @@
+{
+  "description": "Testkit self-test: one markets page and one order book, both served normally.",
+  "routes": [
+    {"path": "/v1/markets", "query": "status=open&limit=2", "file": "markets.json"},
+    {"path": "/v1/markets/M1/book", "file": "book.json"}
+  ]
+}
