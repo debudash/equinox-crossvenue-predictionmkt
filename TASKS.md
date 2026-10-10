@@ -6,7 +6,7 @@ Status: todo | in-progress | in-review | blocked | merged. Updated after every s
 |---|---|---|---|---|---|---|---|---|
 | T-00 | Scaffold, CI, guard, acceptance runner | 0 | runner for 1-20 | Claude Code (Opus 5.5) | t-00-scaffold | !1 | in-review | owner merge |
 | T-01 | Card types, vocab, config, SQLite store | 0 | supports 17 | Claude Code (Opus 5.5) | t-01-contracts | !2 | in-review | owner merge |
-| T-02 | Fixtures and test kit | 0 | supports all | Claude Code | | | todo | |
+| T-02 | Fixtures and test kit | 0 | supports all | Claude Code (Opus 5.5) | t-02-testkit | !3 | in-review | owner merge |
 | T-10 | Kalshi fetcher | 1 | 17, 20 (fetch side) | AO worker | | | todo | |
 | T-11 | Polymarket US fetcher | 1 | 17, 20 (fetch side) | AO worker | | | todo | |
 | T-12 | Matcher | 1 | 1-7, 17 (match side) | AO worker | | | todo | |
