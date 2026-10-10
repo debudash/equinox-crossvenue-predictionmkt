@@ -1,0 +1,15 @@
+# Shared vocabulary. Venue-agnostic. Both fetchers map into these values.
+# A value not listed here is stored as empty and never matches.
+# V1 coverage: Federal Reserve rate markets only.
+# Grow coverage only by adding entries here plus fetcher rules, each with a fixture test.
+
+subjects:
+  - fed_funds_upper_bound
+
+deciders:
+  - federal_reserve
+
+cutoff_units:
+  - percent
+  - usd
+  - count
