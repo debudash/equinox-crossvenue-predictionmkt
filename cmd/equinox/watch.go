@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -29,8 +30,8 @@ func init() {
 			if err != nil {
 				return err
 			}
-			// Interrupt cancels the loop, which releases the run lock.
-			ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt)
+			// Interrupt or SIGTERM (container stop) cancels the loop, which releases the run lock.
+			ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt, syscall.SIGTERM)
 			defer stop()
 			w := &watch.Watcher{St: e.st, Cfg: e.cfg, Fetchers: fs, Clock: time.Now, Log: cmd.OutOrStdout(), Timeout: fetchTimeout}
 			return w.Run(ctx)

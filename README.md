@@ -18,6 +18,9 @@ Answers to the three questions:
 2. **What are the tradeoffs?** Exact equality gives zero wrong-bet routing and a reason for every refusal, at the cost of recall. Recall grows only by adding vocabulary and fetcher rules, or by venues listing exactly complementary contracts.
 3. **How complex is routing?** Simple once a pair matches: one comparison of saved executable asks, fees only when known on both venues, a fixed tie break. The hard part is equivalence, not routing.
 
+## Live
+https://equinox-production-6620.up.railway.app (Railway, real Kalshi and Polymarket US Fed markets, refreshed by `watch`; read-only). Deployment notes: docs/deployment.md.
+
 ## Quickstart
 ```
 make setup && make test
