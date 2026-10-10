@@ -2,6 +2,7 @@ package feed
 
 import (
 	"context"
+	"equinox/internal/card"
 	"go/parser"
 	"go/token"
 	"os"
@@ -290,5 +291,14 @@ func TestFeed_NoWriteMethodsReachable(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestFeed_ClosestRefusalShownFirst(t *testing.T) {
+	near := card.Card{Payoff: card.Payoff{Subject: card.Some("s"), Decider: card.Some("d")}}
+	far := card.Card{Payoff: card.Payoff{Subject: card.Some("s")}}
+	base := card.Card{Payoff: card.Payoff{Subject: card.Some("s"), Decider: card.Some("d")}}
+	if sharedFields(base, near) != 2 || sharedFields(base, far) != 1 || sharedFields(base, card.Card{}) != 0 {
+		t.Fatal("sharedFields counts set, equal payoff fields only")
 	}
 }

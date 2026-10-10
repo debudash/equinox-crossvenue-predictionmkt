@@ -65,6 +65,20 @@ type BotLine struct {
 	Refused   bool   // not_same or no_route
 	Other     string // the market on the other side of the pair
 	DecidedAt string
+
+	shared int // payoff fields set and equal on both cards, for display order
+}
+
+// sharedFields counts payoff fields that are set and equal on both cards.
+func sharedFields(a, b card.Card) int {
+	n := 0
+	fb := b.Payoff.Fields()
+	for i, f := range a.Payoff.Fields() {
+		if f.Set && fb[i].Set && f.Value == fb[i].Value {
+			n++
+		}
+	}
+	return n
 }
 
 // buildPosts groups a snapshot's cards into posts in a fixed base order
@@ -73,8 +87,10 @@ func buildPosts(s *cache.Snapshot) []*Post {
 	byKey := map[string]*Post{}
 	var order []string
 	titles := map[card.MarketRef]string{}
+	cards := map[card.MarketRef]card.Card{}
 	for _, c := range s.Cards() {
 		titles[c.Ref()] = c.Record.Title
+		cards[c.Ref()] = c
 	}
 	for _, c := range s.Cards() {
 		event := c.Record.EventTitle
@@ -89,7 +105,7 @@ func buildPosts(s *cache.Snapshot) []*Post {
 			byKey[key] = p
 			order = append(order, key)
 		}
-		p.Markets = append(p.Markets, buildMarket(s, c, titles))
+		p.Markets = append(p.Markets, buildMarket(s, c, titles, cards))
 	}
 	sort.Strings(order)
 	posts := make([]*Post, 0, len(order))
@@ -101,7 +117,7 @@ func buildPosts(s *cache.Snapshot) []*Post {
 	return posts
 }
 
-func buildMarket(s *cache.Snapshot, c card.Card, titles map[card.MarketRef]string) Market {
+func buildMarket(s *cache.Snapshot, c card.Card, titles map[card.MarketRef]string, cards map[card.MarketRef]card.Card) Market {
 	m := Market{Card: c, Fields: c.Payoff.Fields()}
 	m.Yes, m.No = price(s, c.Ref(), card.Yes), price(s, c.Ref(), card.No)
 	for _, rec := range s.Matches(c.Ref()) {
@@ -114,7 +130,7 @@ func buildMarket(s *cache.Snapshot, c card.Card, titles map[card.MarketRef]strin
 			name += " (" + t + ")"
 		}
 		line := BotLine{Label: "Match", Code: string(rec.Match), Reason: rec.Reason, Other: name,
-			Refused: rec.Match == card.NotSame, DecidedAt: stamp(rec.DecidedAt)}
+			Refused: rec.Match == card.NotSame, DecidedAt: stamp(rec.DecidedAt), shared: sharedFields(c, cards[other])}
 		if line.Refused {
 			m.Others = append(m.Others, line)
 			continue
@@ -139,6 +155,11 @@ func buildMarket(s *cache.Snapshot, c card.Card, titles map[card.MarketRef]strin
 				Reason: rt.Reason, Refused: rt.Action == card.NoRoute, DecidedAt: stamp(rt.DecidedAt)})
 		}
 	}
+	// Show the closest refusal first: the one whose two cards share the most
+	// set payoff fields. This orders the display only; it decides nothing.
+	sort.SliceStable(m.Others, func(i, j int) bool {
+		return m.Others[i].shared > m.Others[j].shared
+	})
 	// With no same or opposite match, the first refusal is the reply and the
 	// rest fold away, so a market compared with hundreds of others stays short.
 	if len(m.Bot) == 0 && len(m.Others) > 0 {
