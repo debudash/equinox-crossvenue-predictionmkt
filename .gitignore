@@ -1,0 +1,16 @@
+# Local runtime data: SQLite database and saved raw responses
+data/
+
+# Build output
+/equinox
+/equinox.exe
+*.exe
+*.test
+*.out
+coverage.*
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
