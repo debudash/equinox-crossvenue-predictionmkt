@@ -1,6 +1,6 @@
 # Test results
 
-Recorded 2026-10-10 on Windows 11, Go 1.27.2, CGO off (so `-race` did not run locally; the Linux CI job runs it). No test calls a live venue.
+Recorded 2026-10-10 on Windows 11, Go 1.27.2, CGO off locally; the race detector ran in a Linux container with `make race` (golang:1.26) and every package passed on 2026-10-10. GitLab CI is off (no runner). No test calls a live venue.
 
 ## make acceptance
 ```

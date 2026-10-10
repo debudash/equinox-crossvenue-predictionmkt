@@ -75,7 +75,7 @@ Key choices: deadline is the moment the outcome is read (Kalshi KXFED event stri
 - Fees are unknown on both venues, so every route compares buy price only, and says so
 - Polymarket US rate-limits order book requests (HTTP 429, Cloudflare). Rate-limited books are skipped and logged; the Kalshi fetcher has no rate-limit backoff
 - Each match run writes one log record per compared pair (10,054 for Fed); the log is never pruned
-- `-race` has not run on the developer laptop (no cgo); the Linux CI job runs it
+- GitLab CI is switched off (the project has no runner); checks run locally with `make test lint guard`, and the race detector with `make race` (Linux container; passed 2026-10-10)
 - Polymarket coverage is Polymarket US (A9). The International fallback was not built (D-19)
 
 ## Repository map

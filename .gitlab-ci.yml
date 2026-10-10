@@ -1,3 +1,12 @@
+# GitLab CI is OFF (owner decision, 2026-10-10): this project has no runner
+# (shared runners disabled, none registered), so every pipeline sat pending and
+# then failed with stuck_pending_no_matching_runners. The checks run locally
+# with `make test lint guard` before each merge (docs/test-results.md).
+# To turn CI back on once a runner exists, delete the workflow block below.
+workflow:
+  rules:
+    - when: never
+
 # Same steps as .github/workflows/ci.yml, for the GitLab host (decision Q-3).
 check:
   image: golang:1.26
