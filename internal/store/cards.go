@@ -103,7 +103,8 @@ func (r *Cards) Versions(ctx context.Context) ([]Version, error) {
 }
 
 // Clear deletes every card version and resets ids, so a rebuild that saves
-// the same cards in the same order reproduces identical rows. Run it inside
+// the same cards reproduces every card's versions, fields and cycles. Row ids
+// can differ across venues when fetchers ran concurrently. Run it inside
 // Store.Tx together with the re-saves.
 func (r *Cards) Clear(ctx context.Context) error {
 	if _, err := r.s.q.ExecContext(ctx, `DELETE FROM cards`); err != nil {
