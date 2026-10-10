@@ -27,5 +27,9 @@
 | ID | Question | Who | Default until answered |
 |---|---|---|---|
 | Q-1 | Closed 2026-10-09: Polymarket US (D-16) | - | - |
-| Q-2 | If watch crashes it leaves the run lock row behind, and every writing command is refused until it is cleared. Add an explicit `equinox unlock`, or accept manual clearing? | Owner | Manual: delete the run_lock row; the refusal message names the holder and time |
-| Q-3 | The repo is on GitLab, so .github/workflows/ci.yml (T-00) never runs. Add .gitlab-ci.yml with the same steps? | Owner | No CI runs; make test lint guard is run locally before each MR |
+| A-10 | Kalshi scope: series KXFED and KXFEDFUNDSYEAR via /events with nested markets. KXFED deadline = event strike_date; KXFEDFUNDSYEAR deadline = market close_time. An ask of exactly 0 or 1 is stored empty. Fee empty (schedule based, rounded per order). unclear_result empty (no rules sentence) | D-18 decision |
+| A-11 | Polymarket US: market_id is the slug; NO buy price = 1 minus best YES bid (one instrument per market); prices are decimal dollar strings, not integer encoded (differs from A-3); deadline from the rules sentence in ET; fee empty (per-fill rounding and tiered rebates); scope is the macro category filtered to "federal funds rate" | D-18 decision |
+| A-12 | Polymarket US unclear_result = yes_or_no_only when the rules have no alternative-settlement wording, based on the venue's settlement docs. Inconsistent with Kalshi (empty); needs owner decision | D-18 decision |
+| Q-2 | Closed 2026-10-10: `equinox unlock --holder <name>` added | - | - |
+| Q-3 | Closed 2026-10-10: .gitlab-ci.yml added | - | - |
+| Q-4 | D-18 failed: no exact Fed pair between Kalshi and Polymarket US. Which fallback? | Owner | Stopped before Wave 2 |

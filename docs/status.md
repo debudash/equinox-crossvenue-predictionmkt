@@ -1,6 +1,6 @@
 # Status
 
-Current wave: 0 (complete, awaiting owner review and merge of !1, !2, !3)
+Current wave: 1 (built on branch wave-1; stopped at the D-18 gate, which failed)
 
 ## Log
 - 2026-10-07: Planning pack generated.
@@ -16,3 +16,7 @@ Current wave: 0 (complete, awaiting owner review and merge of !1, !2, !3)
 - 2026-10-09: T-01 in review (!2, stacked on !1). Card contracts (Opt with empty never equal, Decimal, integer Micros, Op.Complement, Instant), vocab and config loaders, validation helpers, SQLite schema and repositories, cycles, run lock. Surprises: schema extended beyond docs/architecture.md with cycle_id on data rows, card versioning, raw_responses.kind, skips.stage and subject_counts (assumptions A-5 to A-9); modernc sqlite raised go.mod to go 1.26.
 - 2026-10-09: T-02 in review (!3, stacked on !2). Fixture layout and manifest format (fixtures/README.md), fixture transport that fails unknown requests, timeout / HTTP 500 / malformed JSON faults, NoNetwork transport, fixed AsOf, temp SQLite helper. Nothing surprising.
 - 2026-10-09: Wave 0 done; stopped at the wave boundary for approval.
+- 2026-10-10: Owner approved Q-2 (equinox unlock) and Q-3 (.gitlab-ci.yml) and asked to batch changes. Wave 1 batched on branch wave-1, one commit per task.
+- 2026-10-10: T-12 matcher and T-13 router in review on wave-1; tests 1-15 pass.
+- 2026-10-10: T-10 Kalshi fetcher (KXFED + KXFEDFUNDSYEAR) and T-11 Polymarket US fetcher in review on wave-1. Real Fed fixtures recorded 2026-10-10T02:25Z.
+- 2026-10-10: D-18 gate FAILED. Polymarket US has Fed thresholds only for year end 2027, worded "greater than or equal to X%" (gte); Kalshi words every Fed market "above X%" (gt) and lists no lt. gt X vs gte X is not_same (test 5), and no exact complement exists. unclear_result is also set differently (Kalshi empty, Polymarket yes_or_no_only). Stopped for owner decision.
