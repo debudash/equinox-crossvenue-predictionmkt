@@ -350,7 +350,7 @@ func TestE2E_SyntheticHappyPath(t *testing.T) {
 		if r.FeeApplied || !strings.Contains(r.Reason, "Fees were not applied") {
 			t.Errorf("%s %s: fees should not apply (both empty): %q", c.poly, c.side, r.Reason)
 		}
-		if !strings.HasPrefix(r.Reason, "Buy "+string(c.side)+" on kalshi") || !strings.HasSuffix(r.Reason, ".") {
+		if !strings.HasPrefix(r.Reason, "Compared "+string(c.side)+" on kalshi") || !strings.HasSuffix(r.Reason, ".") {
 			t.Errorf("%s %s: reason is not plain sentences: %q", c.poly, c.side, r.Reason)
 		}
 	}

@@ -73,7 +73,7 @@ func Decide(in Input) card.LogRecord {
 		why = "ties and wins exact ties as the reference venue"
 	}
 	rec.Action = card.BuyOn(winner)
-	rec.Reason = fmt.Sprintf("Buy %s on %s at %s vs %s on %s at %s; %s %s. %s",
+	rec.Reason = fmt.Sprintf("Compared %s on %s at %s with %s on %s at %s; %s %s. %s",
 		rec.SideA, in.A.Venue, costA, rec.SideB, in.B.Venue, costB, winner, why, feeNote)
 	return rec
 }
