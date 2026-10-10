@@ -10,8 +10,7 @@ router:
   counter_venue: polymarket
   price_max_age: 10m
 storage:
-  sqlite_path: data/equinox.db
-  raw_dir: data/raw
+  sqlite_path: data/equinox.db   # raw responses are stored in SQLite (raw_responses.body), so there is no raw_dir
 watch:
   discovery_every: 30m          # fetch market lists; match only if cards changed
   prices_every: 2m              # must stay well under router.price_max_age
