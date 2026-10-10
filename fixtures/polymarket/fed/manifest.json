@@ -1,0 +1,108 @@
+{
+  "description": "Real Polymarket US public market data recorded 2026-10-10T02:25Z (UTC) with curl from https://gateway.polymarket.us: every open macro market page (207 markets, 22 of them Federal Reserve federal funds rate markets) and the order book of each of the 22 Fed markets. Bodies saved byte-for-byte.",
+  "routes": [
+    {
+      "path": "/v1/markets",
+      "query": "categories=macro&active=true&closed=false&limit=100&offset=0",
+      "file": "markets_0.json"
+    },
+    {
+      "path": "/v1/markets",
+      "query": "categories=macro&active=true&closed=false&limit=100&offset=100",
+      "file": "markets_100.json"
+    },
+    {
+      "path": "/v1/markets",
+      "query": "categories=macro&active=true&closed=false&limit=100&offset=200",
+      "file": "markets_200.json"
+    },
+    {
+      "path": "/v1/markets/cbpac-fed-gt25bps-2026-12-31/book",
+      "file": "books/cbpac-fed-gt25bps-2026-12-31.json"
+    },
+    {
+      "path": "/v1/markets/cbpac-usfed-2026-cut/book",
+      "file": "books/cbpac-usfed-2026-cut.json"
+    },
+    {
+      "path": "/v1/markets/cbpac-usfed-hike2-2026-12-31-hike/book",
+      "file": "books/cbpac-usfed-hike2-2026-12-31-hike.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-10-28-cut25/book",
+      "file": "books/rdc-usfed-fomc-2026-10-28-cut25.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-10-28-cut50/book",
+      "file": "books/rdc-usfed-fomc-2026-10-28-cut50.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-10-28-hike25/book",
+      "file": "books/rdc-usfed-fomc-2026-10-28-hike25.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-10-28-hike50/book",
+      "file": "books/rdc-usfed-fomc-2026-10-28-hike50.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-10-28-nochng/book",
+      "file": "books/rdc-usfed-fomc-2026-10-28-nochng.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-12-09-cut25/book",
+      "file": "books/rdc-usfed-fomc-2026-12-09-cut25.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-12-09-cut50/book",
+      "file": "books/rdc-usfed-fomc-2026-12-09-cut50.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-12-09-hike25/book",
+      "file": "books/rdc-usfed-fomc-2026-12-09-hike25.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-12-09-hike50/book",
+      "file": "books/rdc-usfed-fomc-2026-12-09-hike50.json"
+    },
+    {
+      "path": "/v1/markets/rdc-usfed-fomc-2026-12-09-nochng/book",
+      "file": "books/rdc-usfed-fomc-2026-12-09-nochng.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte3pt25/book",
+      "file": "books/rvcus-fedfnds-ondt-2027-12-31-gte3pt25.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte3pt50/book",
+      "file": "books/rvcus-fedfnds-ondt-2027-12-31-gte3pt50.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte3pt75/book",
+      "file": "books/rvcus-fedfnds-ondt-2027-12-31-gte3pt75.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte4pt00/book",
+      "file": "books/rvcus-fedfnds-ondt-2027-12-31-gte4pt00.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte4pt25/book",
+      "file": "books/rvcus-fedfnds-ondt-2027-12-31-gte4pt25.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte4pt50/book",
+      "file": "books/rvcus-fedfnds-ondt-2027-12-31-gte4pt50.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte4pt75/book",
+      "file": "books/rvcus-fedfnds-ondt-2027-12-31-gte4pt75.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte5pt00/book",
+      "file": "books/rvcus-fedfnds-ondt-2027-12-31-gte5pt00.json"
+    },
+    {
+      "path": "/v1/markets/rvcus-fedfnds-ondt-2027-12-31-gte5pt25/book",
+      "file": "books/rvcus-fedfnds-ondt-2027-12-31-gte5pt25.json"
+    }
+  ]
+}

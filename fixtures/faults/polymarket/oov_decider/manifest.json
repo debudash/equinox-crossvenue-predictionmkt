@@ -1,0 +1,18 @@
+{
+  "description": "SYNTHETIC fault fixture for test 17: the synthetic Polymarket pair with the source changed to the Federal Reserve Bank of New York, a decider outside vocab.yaml.",
+  "routes": [
+    {
+      "path": "/v1/markets",
+      "query": "categories=macro&active=true&closed=false&limit=100&offset=0",
+      "file": "markets_0.json"
+    },
+    {
+      "path": "/v1/markets/synthetic-fedfnds-2026-12-09-gt3pt75/book",
+      "file": "books/synthetic-fedfnds-2026-12-09-gt3pt75.json"
+    },
+    {
+      "path": "/v1/markets/synthetic-fedfnds-2026-12-09-lte3pt75/book",
+      "file": "books/synthetic-fedfnds-2026-12-09-lte3pt75.json"
+    }
+  ]
+}

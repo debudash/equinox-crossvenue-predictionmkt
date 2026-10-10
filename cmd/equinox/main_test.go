@@ -24,18 +24,17 @@ func TestRootHasEveryCommand(t *testing.T) {
 }
 
 func TestStubReportsOwner(t *testing.T) {
-	root := newRoot()
-	root.SetArgs([]string{"match"})
-	err := root.Execute()
-	if err == nil || !strings.Contains(err.Error(), "not implemented") || !strings.Contains(err.Error(), "T-12") {
-		t.Fatalf("want not-implemented error naming T-12, got %v", err)
+	err := stubCommand("later", "a planned command", "T-99").RunE(nil, nil)
+	if err == nil || !strings.Contains(err.Error(), "not implemented") || !strings.Contains(err.Error(), "T-99") {
+		t.Fatalf("want not-implemented error naming T-99, got %v", err)
 	}
 }
 
 func TestRegisteredCommandReplacesStub(t *testing.T) {
 	ran := false
+	real := registered["serve"]
 	register(&cobra.Command{Use: "serve", RunE: func(*cobra.Command, []string) error { ran = true; return nil }})
-	t.Cleanup(func() { delete(registered, "serve") })
+	t.Cleanup(func() { registered["serve"] = real })
 	root := newRoot()
 	root.SetArgs([]string{"serve"})
 	if err := root.Execute(); err != nil || !ran {

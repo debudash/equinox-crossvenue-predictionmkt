@@ -48,7 +48,15 @@ type Store struct {
 // Use ":memory:" only through OpenMemory.
 func Open(path string) (*Store, error) {
 	dsn := "file:" + path + "?_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)&_pragma=foreign_keys(1)"
-	return open(dsn)
+	s, err := open(dsn)
+	if err != nil {
+		return nil, err
+	}
+	// One connection per process serializes writes from concurrent fetchers.
+	// With several, two transactions that both read then write deadlock with
+	// SQLITE_BUSY. Other processes (serve) still read through WAL.
+	s.db.SetMaxOpenConns(1)
+	return s, nil
 }
 
 // OpenMemory opens a private in-memory database, for tests.

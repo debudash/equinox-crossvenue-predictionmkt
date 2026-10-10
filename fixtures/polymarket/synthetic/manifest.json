@@ -1,0 +1,18 @@
+{
+  "description": "SYNTHETIC, not recorded. Hand-built for required tests 16 and 19 and the routing demo (decision D-19) in the Polymarket US shape of the 2026-10-10 recording: one market 'greater than 3.75%' (same as Kalshi KXFED-26DEC-T3.75) and one 'less than or equal to 3.75%' (its opposite), both read December 9, 2026 at 2:00 PM ET, sourced from the United States Federal Reserve, with an explicit fallback sentence (D-20).",
+  "routes": [
+    {
+      "path": "/v1/markets",
+      "query": "categories=macro&active=true&closed=false&limit=100&offset=0",
+      "file": "markets_0.json"
+    },
+    {
+      "path": "/v1/markets/synthetic-fedfnds-2026-12-09-gt3pt75/book",
+      "file": "books/synthetic-fedfnds-2026-12-09-gt3pt75.json"
+    },
+    {
+      "path": "/v1/markets/synthetic-fedfnds-2026-12-09-lte3pt75/book",
+      "file": "books/synthetic-fedfnds-2026-12-09-lte3pt75.json"
+    }
+  ]
+}

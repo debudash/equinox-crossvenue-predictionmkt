@@ -1,0 +1,7 @@
+{
+  "description": "Hand-edited copy of the 2026-10-10 KXFED recording: KXFED-26DEC-T3.50 has a yes ask of 1.25 (outside 0 to 1), a real multivariate combo market (recorded with mve_filter=only) is appended to KXFED-26DEC, and KXFED-27JAN names a settlement source outside the vocabulary.",
+  "routes": [
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFED&status=open&with_nested_markets=true&limit=200", "file": "events_kxfed.json"},
+    {"path": "/trade-api/v2/events", "query": "series_ticker=KXFEDFUNDSYEAR&status=open&with_nested_markets=true&limit=200", "file": "events_empty.json"}
+  ]
+}

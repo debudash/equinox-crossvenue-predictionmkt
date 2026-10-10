@@ -1,0 +1,17 @@
+# Same steps as .github/workflows/ci.yml, for the GitLab host (decision Q-3).
+check:
+  image: golang:1.26
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+    GOTOOLCHAIN: auto
+  cache:
+    key: go-$CI_COMMIT_REF_SLUG
+    paths: [.go/pkg/mod]
+  script:
+    - make setup
+    - make test
+    - make lint
+    - make guard
