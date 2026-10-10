@@ -11,8 +11,8 @@ Status: todo | in-progress | in-review | blocked | merged. Updated after every s
 | T-11 | Polymarket US fetcher | 1 | 17, 20 (fetch side) | Claude Code subagent (Opus 5.5) | wave-1 | wave-1 MR | merged | |
 | T-12 | Matcher | 1 | 1-7, 17 (match side) | Claude Code (Opus 5.5) | wave-1 | wave-1 MR | merged | |
 | T-13 | Router | 1 | 8-15 | Claude Code (Opus 5.5) | wave-1 | wave-1 MR | merged | |
-| T-20 | Fetch and rebuild commands, run lock | 2 | 18, W7 | Claude Code (Opus 5.5) | wave-1 | !4 | in-review | |
-| T-21 | Read-only feed and cache | 2 | W5, W6, W10 | Claude Code subagent (Opus 5.5) | wave-1 | !4 | in-review | |
-| T-22 | Integration and red-team tests | 2 | 16, 17, 19, 20 (end to end) | Claude Code subagent (Opus 5.5) | wave-1 | !4 | in-review | |
-| T-23 | Background watch scheduler | 3 | W1-W4, W8, W9, W11 | Claude Code (Opus 5.5) | wave-1 | !4 | in-review | |
+| T-20 | Fetch and rebuild commands, run lock | 2 | 18, W7 | Claude Code (Opus 5.5) | wave-1 | !4 | merged | |
+| T-21 | Read-only feed and cache | 2 | W5, W6, W10 | Claude Code subagent (Opus 5.5) | wave-1 | !4 | merged | |
+| T-22 | Integration and red-team tests | 2 | 16, 17, 19, 20 (end to end) | Claude Code subagent (Opus 5.5) | wave-1 | !4 | merged | |
+| T-23 | Background watch scheduler | 3 | W1-W4, W8, W9, W11 | Claude Code (Opus 5.5) | wave-1 | !4 | merged | |
 | T-30 | Evidence and ship | 4 | 20 of 20, W1-W11 | Claude Code (Opus 5.5) | wave-1 | !4 | merged | |
