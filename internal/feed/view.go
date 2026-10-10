@@ -223,6 +223,36 @@ func finishPost(p *Post, now time.Time) {
 	}
 }
 
+// Lead is the market shown on the post's card: the one with the highest
+// volume_24h, else the first with a saved price, else the first.
+func (p *Post) Lead() *Market {
+	var best *Market
+	var bestVol *big.Rat
+	for i := range p.Markets {
+		m := &p.Markets[i]
+		if v, ok := new(big.Rat).SetString(m.Card.Record.Volume24h); ok && m.Card.Record.Volume24h != "" {
+			if bestVol == nil || v.Cmp(bestVol) > 0 {
+				best, bestVol = m, v
+			}
+		}
+	}
+	if best != nil {
+		return best
+	}
+	for i := range p.Markets {
+		if p.Markets[i].Yes.Value != "-" || p.Markets[i].No.Value != "-" {
+			return &p.Markets[i]
+		}
+	}
+	if len(p.Markets) > 0 {
+		return &p.Markets[0]
+	}
+	return nil
+}
+
+// Matched reports whether any market in the post has a same or opposite match.
+func (p *Post) Matched() bool { return len(p.Badges) > 0 }
+
 // Closes returns the earliest deadline still ahead, or "-".
 func (p *Post) Closes() string { return stamp(p.closing) }
 

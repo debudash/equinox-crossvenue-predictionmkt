@@ -21,6 +21,15 @@ type Snapshot struct {
 	prices  map[card.MarketRef]map[card.Side]card.PriceRecord
 	matches map[card.MarketRef][]card.LogRecord // latest match record of every pair naming the market
 	routes  map[pair][]card.LogRecord           // latest route record per side, for each pair
+	stats   Stats
+}
+
+// Stats are snapshot totals for the overview cards. They are counted from the
+// same saved records the pages show.
+type Stats struct {
+	Cards                 map[string]int // per venue
+	Pairs, Same, Opposite int            // latest match record per compared pair
+	Routed, Refused       int            // latest route record per pair and side
 }
 
 type pair struct{ a, b card.MarketRef }
@@ -59,16 +68,35 @@ func Build(ctx context.Context, r Reader, c store.Cycle) (*Snapshot, error) {
 		}
 		s.prices[ref][p.Side] = p
 	}
+	s.stats.Cards = map[string]int{}
+	for _, c := range cards {
+		s.stats.Cards[c.Venue]++
+	}
 	for _, m := range matches {
+		s.stats.Pairs++
+		switch m.Match {
+		case card.Same:
+			s.stats.Same++
+		case card.Opposite:
+			s.stats.Opposite++
+		}
 		s.matches[m.MarketA] = append(s.matches[m.MarketA], m)
 		s.matches[m.MarketB] = append(s.matches[m.MarketB], m)
 	}
 	for _, rt := range routes {
 		k := pair{rt.MarketA, rt.MarketB}
 		s.routes[k] = append(s.routes[k], rt)
+		if rt.Action == card.NoRoute {
+			s.stats.Refused++
+		} else {
+			s.stats.Routed++
+		}
 	}
 	return s, nil
 }
+
+// Stats returns the snapshot's totals.
+func (s *Snapshot) Stats() Stats { return s.stats }
 
 // Cards returns the latest version of every card, ordered by venue then market id.
 func (s *Snapshot) Cards() []card.Card { return s.cards }

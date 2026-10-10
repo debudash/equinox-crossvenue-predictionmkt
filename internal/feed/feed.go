@@ -19,6 +19,11 @@ var pages = template.Must(template.New("").Funcs(template.FuncMap{
 	// postHref links to one post inside the cycle the page is reading.
 	"stampOf":   stamp,
 	"venueName": VenueName,
+	// cardOf bundles what the post card template needs.
+	"cardOf": func(p *Post, cycle int64, reference string) postCard {
+		return postCard{Post: p, Cycle: cycle, Reference: reference}
+	},
+	"add": func(a, b int) int { return a + b },
 	// flairOf pairs a venue with the reference venue for the flair template.
 	"flairOf": func(venue, reference string) struct{ Venue, Reference string } {
 		return struct{ Venue, Reference string }{venue, reference}
@@ -27,6 +32,14 @@ var pages = template.Must(template.New("").Funcs(template.FuncMap{
 		return "/post?" + url.Values{"cycle": {strconv.FormatInt(cycle, 10)}, "key": {key}}.Encode()
 	},
 }).ParseFS(templateFS, "templates/*.html"))
+
+// postCard is the data for one post card: the post, the cycle its link reads,
+// and the reference venue for flair.
+type postCard struct {
+	Post      *Post
+	Cycle     int64
+	Reference string
+}
 
 // Server renders the feed. It reads only from the cache.
 type Server struct {
@@ -97,6 +110,30 @@ type feedPage struct {
 	More       string
 }
 
+// Section is one category module on the overview: its top posts by volume.
+type Section struct {
+	Category string
+	Top      []*Post
+	Total    int
+	Matched  int
+	Href     string // the full list for this category
+}
+
+type overviewPage struct {
+	Frame
+	Sections   []Section
+	Stats      cache.Stats
+	Venue      string
+	Venues     []string
+	Categories []string
+	Sorts      []sortLink
+	Sort       string
+	Category   string
+}
+
+// overviewSize is how many posts each category module shows.
+const overviewSize = 5
+
 type sortLink struct {
 	Label, Href string
 	On          bool
@@ -150,6 +187,12 @@ func (s *Server) feed(w http.ResponseWriter, r *http.Request) {
 		s.render(w, "empty", nil)
 		return
 	}
+	// The overview is the landing page. Any sort, category, cursor or cycle
+	// parameter asks for the paged list, which keeps a reader on one cycle (W6).
+	if q.Get("sort") == "" && q.Get("category") == "" && q.Get("cursor") == "" && q.Get("cycle") == "" {
+		s.overview(w, q, snap)
+		return
+	}
 	order := q.Get("sort")
 	if order != SortClosing && order != SortMatched {
 		order = SortTop
@@ -180,12 +223,66 @@ func (s *Server) feed(w http.ResponseWriter, r *http.Request) {
 		more.Set("cursor", strconv.Itoa(end))
 		p.More = "/?" + more.Encode()
 	}
+	p.Sorts = sortLinks(keep, order)
+	s.render(w, "feed", p)
+}
+
+// sortLinks are the view tabs: the overview, then the three list sorts.
+func sortLinks(keep url.Values, current string) []sortLink {
+	over := url.Values{}
+	if v := keep.Get("venue"); v != "" {
+		over.Set("venue", v)
+	}
+	out := []sortLink{{Label: "Overview", Href: "/?" + over.Encode(), On: current == ""}}
 	for _, sl := range []struct{ label, key string }{{"Top", SortTop}, {"Closing soon", SortClosing}, {"Matched", SortMatched}} {
 		v := cloneValues(keep)
 		v.Set("sort", sl.key)
-		p.Sorts = append(p.Sorts, sortLink{Label: sl.label, Href: "/?" + v.Encode(), On: sl.key == order})
+		out = append(out, sortLink{Label: sl.label, Href: "/?" + v.Encode(), On: sl.key == current})
 	}
-	s.render(w, "feed", p)
+	return out
+}
+
+// overview renders one module per category with its top posts by volume.
+func (s *Server) overview(w http.ResponseWriter, q url.Values, snap *cache.Snapshot) {
+	venue := q.Get("venue")
+	keep := url.Values{}
+	if venue != "" {
+		keep.Set("venue", venue)
+	}
+	p := overviewPage{Frame: s.frameFor(snap, keep), Stats: snap.Stats(), Venue: venue}
+	all := buildPosts(snap)
+	p.Venues, p.Categories = distinct(all)
+	byCat := map[string][]*Post{}
+	for _, post := range filterSort(all, venue, "", SortTop) {
+		byCat[post.Category] = append(byCat[post.Category], post)
+	}
+	for cat, posts := range byCat {
+		sec := Section{Category: cat, Total: len(posts)}
+		for _, post := range posts {
+			if post.Matched() {
+				sec.Matched++
+			}
+		}
+		sec.Top = posts[:min(overviewSize, len(posts))]
+		v := cloneValues(keep)
+		v.Set("category", cat)
+		v.Set("sort", SortTop)
+		sec.Href = "/?" + v.Encode()
+		p.Sections = append(p.Sections, sec)
+	}
+	// Categories with a match come first, then by number of posts, then by name.
+	sort.Slice(p.Sections, func(i, j int) bool {
+		a, b := p.Sections[i], p.Sections[j]
+		if (a.Matched > 0) != (b.Matched > 0) {
+			return a.Matched > 0
+		}
+		if a.Total != b.Total {
+			return a.Total > b.Total
+		}
+		return a.Category < b.Category
+	})
+	p.Sorts = sortLinks(keep, "")
+	s.render(w, "overview", p)
 }
 
 func (s *Server) post(w http.ResponseWriter, r *http.Request) {
