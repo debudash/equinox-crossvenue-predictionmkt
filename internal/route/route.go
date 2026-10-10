@@ -83,6 +83,9 @@ func usable(p *card.PriceRecord, ref card.MarketRef, side card.Side, asOf time.T
 	switch {
 	case p == nil || p.BuyPrice.IsEmpty():
 		return card.PriceRecord{}, fmt.Sprintf("The %s %s price is missing for %s.", ref.Venue, side, ref.MarketID)
+	case card.CheckPrice(mustGet(p.BuyPrice)) != nil:
+		// Inconsistent saved data never reaches a decision (build requirements, "Failure behavior").
+		return card.PriceRecord{}, fmt.Sprintf("The %s %s price for %s is outside 0 to 1 and was not used.", ref.Venue, side, ref.MarketID)
 	case p.PricedAt.After(asOf):
 		return card.PriceRecord{}, fmt.Sprintf("The %s %s price for %s was saved after as_of.", ref.Venue, side, ref.MarketID)
 	case asOf.Sub(p.PricedAt) > maxAge:
@@ -91,6 +94,8 @@ func usable(p *card.PriceRecord, ref card.MarketRef, side card.Side, asOf time.T
 	}
 	return *p, ""
 }
+
+func mustGet(o card.Opt[card.Micros]) card.Micros { v, _ := o.Get(); return v }
 
 func unknownFees(okA, okB bool, a, b card.MarketRef) string {
 	switch {

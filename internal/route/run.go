@@ -32,6 +32,16 @@ func Run(ctx context.Context, st *store.Store, cycleID int64, side card.Side, as
 		if err != nil {
 			return sum, err
 		}
+		for _, p := range []*card.PriceRecord{in.PriceA, in.PriceB} {
+			if p == nil {
+				continue
+			}
+			if err := card.CheckPriceRecord(*p, cfg.Venues.Allowed); err != nil {
+				if err := st.Skips.Append(ctx, store.Skip{CycleID: cycleID, Stage: store.StageRoute, Venue: p.Venue, MarketID: p.MarketID, Reason: err.Error()}); err != nil {
+					return sum, err
+				}
+			}
+		}
 		rec := Decide(in)
 		if _, err := st.Log.Append(ctx, cycleID, rec); err != nil {
 			return sum, err

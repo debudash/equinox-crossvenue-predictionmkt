@@ -139,3 +139,8 @@ func TestRoute_DecideIsPure(t *testing.T) {
 		t.Error("Decide is not deterministic")
 	}
 }
+
+func TestRoute_PriceOutsideZeroToOneIsNotUsed(t *testing.T) {
+	rec := Decide(input(card.Same, card.Yes, price(refA, card.Yes, "1.25", "", 0), price(refB, card.Yes, "0.95", "", 0)))
+	want(t, rec, card.NoRoute, "outside 0 to 1")
+}

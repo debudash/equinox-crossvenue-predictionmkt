@@ -1,6 +1,6 @@
 # Status
 
-Current wave: 2 (Wave 1 on branch wave-1, MR !4; D-18 resolved by D-19 and D-20)
+Current wave: 4 next (Waves 1 to 3 on branch wave-1, MR !4; make acceptance 20 of 20 and 11 of 11)
 
 ## Log
 - 2026-10-07: Planning pack generated.
@@ -25,3 +25,6 @@ Current wave: 2 (Wave 1 on branch wave-1, MR !4; D-18 resolved by D-19 and D-20)
 - 2026-10-10: T-20 in review on wave-1: registry, concurrent fetch, rebuild, run lock on writing commands. Tests 18 and W7 pass. Surprise: concurrent fetchers deadlocked SQLite (SQLITE_BUSY on read-to-write upgrade); fixed by one connection per process in store.Open. Test 18 compares each card's versions, fields and cycles; row ids interleave across venues and are not compared.
 - 2026-10-10: T-23 started early (owner asked to batch) and in review on wave-1: watch with discovery, prices and retention passes, run lock, clean shutdown. W1-W4, W8, W9, W11 pass. A needed price "changed" means the usable price (after the staleness rule, via route.UsablePrice) differs from the one the last route record used; route.Prepare extracted so watch and the route command share one lookup. Rate-limit backoff lives in the fetchers (Polymarket US backs off on 429; Kalshi has none yet).
 - 2026-10-10: T-21 in review on wave-1: cache (snapshots per completed cycle, atomic swap, previous kept), Reddit-style feed, serve. W5, W6, W10 pass. Watch status rows from the wireframe (intervals, per-venue failures) are not shown; the sidebar shows last completed cycle and counts. A Load more naming an evicted cycle restarts at the newest cycle and says so.
+- 2026-10-10: T-22 in review on wave-1: end-to-end tests 16, 17, 19, 20 on a labelled SYNTHETIC pair (D-19), a real-fixture test proving the closest real pair is not_same on cutoff_op, and red-team tests R04 to R27. Found a router bug: a saved price outside 0 to 1 was used; fixed in route (treated as unusable, named in the reason, logged as a route-stage skip).
+- 2026-10-10: Live smoke run (scratch DB): fetch saved 457 Kalshi and 22 Polymarket US Fed cards; match compared 10,054 pairs, all not_same; rebuild made no venue call; serve rendered without JavaScript. Polymarket US rate-limited some book requests (Cloudflare 1015); logged as skips, run completed.
+- 2026-10-10: make test lint guard pass; make acceptance 20 of 20 required, 11 of 11 amendment. Stopped at the wave boundary before T-30.

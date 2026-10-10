@@ -419,9 +419,6 @@ func TestRT_R19_SavedPriceOutsideZeroToOneNotUsedByRouter(t *testing.T) {
 	}
 	e.Route(cyc, card.Yes, testkit.AsOf)
 	r := e.Pair(cyc, card.RouteRecord, k, gt, card.Yes)
-	if v, ok := r.PriceA.Get(); ok && v == card.Micros(1_250_000) {
-		t.Skipf("BUG: route.Run used a saved price of %s (outside 0 to 1) instead of skipping it as inconsistent: %s %q", v, r.Action, r.Reason)
-	}
 	if r.Action != card.NoRoute {
 		t.Errorf("route = %s %q; want no_route for an inconsistent saved price", r.Action, r.Reason)
 	}
