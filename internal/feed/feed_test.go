@@ -5,6 +5,7 @@ import (
 	"equinox/internal/card"
 	"go/parser"
 	"go/token"
+	"math/big"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -59,7 +60,7 @@ func TestAmd_W6_LoadMorePagesWithinReadersCycle(t *testing.T) {
 		t.Fatalf("fixture should give 3 posts in cycle %d, got %v", last, want)
 	}
 
-	page := get(t, srv, "/")
+	page := get(t, srv, "/?sort=top")
 	got := postKeys(page)
 	if strings.Contains(page, "New data saved at") {
 		t.Fatal("banner shown before any newer cycle completed")
@@ -117,8 +118,9 @@ func TestAmd_W10_ServeKeepsLastCycleWhenWatchStopped(t *testing.T) {
 		t.Fatalf("cache moved off cycle %d to %d", last, c.Current().Cycle)
 	}
 	for _, want := range []string{
-		"cycle " + strconv.FormatInt(last, 10) + " · completed " + stamp(t2),
-		"no cycle has completed since " + stamp(t2) + "; it may have crashed",
+		"cycle " + strconv.FormatInt(last, 10) + " · updated " + stamp(t2),
+		"Feed watcher not responding",
+		"nothing has completed since " + stamp(t2) + "; it may have crashed",
 		`data-post="polymarket|Big game"`,
 	} {
 		if !strings.Contains(page, want) {
@@ -145,7 +147,7 @@ func TestFeedPost_CrosspostBadgeAndBotReplyVerbatim(t *testing.T) {
 		"<code>buy_on_polymarket</code> " + routeYesReason,
 		`<code class="no">no_route</code> ` + routeNoReason,
 		`<code class="no">not_same</code> ` + notSameReason,
-		`Yes <b>0.45</b></span><span class="px">No <b>0.56</b></span><span class="muted small">saved ` + stamp(t1),
+		`<span class="px yes">Yes <b>0.45</b></span><span class="px no">No <b>0.56</b></span><span class="muted small">saved ` + stamp(t1),
 		`<span class="mt">Market KA</span><span class="pill x">Same bet on Polymarket</span>`,
 	} {
 		if !strings.Contains(post, want) {
@@ -171,7 +173,6 @@ func TestFeed_Sorts(t *testing.T) {
 		sort string
 		want []string
 	}{
-		{"", []string{"polymarket|Big game", "polymarket|Fed rate December", "kalshi|Fed December"}},
 		{"top", []string{"polymarket|Big game", "polymarket|Fed rate December", "kalshi|Fed December"}},
 		{"closing", []string{"polymarket|Big game", "kalshi|Fed December", "polymarket|Fed rate December"}},
 		{"matched", []string{"polymarket|Fed rate December", "kalshi|Fed December", "polymarket|Big game"}},
@@ -179,6 +180,12 @@ func TestFeed_Sorts(t *testing.T) {
 		if got := postKeys(get(t, srv, "/?sort="+tc.sort)); !slices.Equal(got, tc.want) {
 			t.Errorf("sort %q: got %v, want %v", tc.sort, got, tc.want)
 		}
+	}
+	// The overview shows every post, grouped in category modules.
+	over := postKeys(get(t, srv, "/"))
+	slices.Sort(over)
+	if want := []string{"kalshi|Fed December", "polymarket|Big game", "polymarket|Fed rate December"}; !slices.Equal(over, want) {
+		t.Errorf("overview shows %v, want every post %v", over, want)
 	}
 	// Score is the summed volume_24h of the event's markets.
 	if page := get(t, srv, "/"); !strings.Contains(page, "<b>150</b>24h vol") {
@@ -205,7 +212,7 @@ func TestFeed_WorksWithoutJavaScript(t *testing.T) {
 	f := newFixture(t)
 	last := seed(f)
 	_, srv := serve(t, f, 1, 2)
-	pages := []string{get(t, srv, "/"), get(t, srv, "/post?cycle="+strconv.FormatInt(last, 10)+"&key=kalshi|Fed+December")}
+	pages := []string{get(t, srv, "/?sort=top"), get(t, srv, "/post?cycle="+strconv.FormatInt(last, 10)+"&key=kalshi|Fed+December"), get(t, srv, "/")}
 	for _, p := range pages {
 		if regexp.MustCompile(`(?i)<script|\son[a-z]+=|javascript:`).MatchString(p) {
 			t.Error("page uses JavaScript")
@@ -300,5 +307,58 @@ func TestFeed_ClosestRefusalShownFirst(t *testing.T) {
 	base := card.Card{Payoff: card.Payoff{Subject: card.Some("s"), Decider: card.Some("d")}}
 	if sharedFields(base, near) != 2 || sharedFields(base, far) != 1 || sharedFields(base, card.Card{}) != 0 {
 		t.Fatal("sharedFields counts set, equal payoff fields only")
+	}
+}
+
+func TestFeed_OverviewShowsTopFivePerCategory(t *testing.T) {
+	f := newFixture(t)
+	f.cycle(store.KindFetch, store.StatusCompleted, testkit.AsOf.Add(-time.Minute), func(id int64) {
+		for i := 1; i <= 7; i++ {
+			f.card(id, "kalshi", "C"+strconv.Itoa(i), "Crypto event "+strconv.Itoa(i), "Crypto", strconv.Itoa(i*10), 24*time.Hour)
+		}
+		f.card(id, "polymarket", "S1", "Sports event", "Sports", "5", 24*time.Hour)
+	})
+	_, srv := serve(t, f, 25, 2)
+	page := get(t, srv, "/")
+	keys := postKeys(page)
+	crypto := 0
+	for _, k := range keys {
+		if strings.HasPrefix(k, "kalshi|Crypto event") {
+			crypto++
+		}
+	}
+	if crypto != overviewSize || !slices.Contains(keys, "polymarket|Sports event") {
+		t.Fatalf("overview should show the top %d crypto posts and the sports post, got %v", overviewSize, keys)
+	}
+	if keys[0] != "kalshi|Crypto event 7" {
+		t.Errorf("top post should be the highest volume, got %s", keys[0])
+	}
+	if !strings.Contains(page, "top 5 of 7 posts") || !strings.Contains(page, `href="/?category=Crypto&sort=top">See all</a>`) {
+		t.Error("crypto module should say top 5 of 7 and link to the full list")
+	}
+}
+
+func TestFeed_CompactVolume(t *testing.T) {
+	for in, want := range map[string]string{"950": "950", "78349.6": "78.3K", "1480945.33": "1.5M", "150": "150", "12.5": "12.5", "1000": "1K"} {
+		r, _ := new(big.Rat).SetString(in)
+		if got := compact(r); got != want {
+			t.Errorf("compact(%s) = %s, want %s", in, got, want)
+		}
+	}
+}
+
+func TestFeed_TopKeepsEveryVenue(t *testing.T) {
+	var ranked []*Post
+	for i := 0; i < 6; i++ {
+		ranked = append(ranked, &Post{Key: "k" + strconv.Itoa(i), Venue: "kalshi"})
+	}
+	ranked = append(ranked, &Post{Key: "p0", Venue: "polymarket"})
+	got := topWithEveryVenue(ranked, 5)
+	if len(got) != 5 || got[4].Key != "p0" || got[0].Key != "k0" {
+		var keys []string
+		for _, p := range got {
+			keys = append(keys, p.Key)
+		}
+		t.Fatalf("got %v, want k0..k3 then p0", keys)
 	}
 }

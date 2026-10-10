@@ -30,6 +30,10 @@ func init() {
 			if err != nil {
 				return err
 			}
+			// Display-only categories (never matched) from the same config file.
+			if err := registry.LoadDisplay(e.cfgPath, fs); err != nil {
+				return err
+			}
 			// Interrupt or SIGTERM (container stop) cancels the loop, which releases the run lock.
 			ctx, stop := signal.NotifyContext(cmd.Context(), os.Interrupt, syscall.SIGTERM)
 			defer stop()

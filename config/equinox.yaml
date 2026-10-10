@@ -2,9 +2,52 @@
 venues:
   allowed: [kalshi, polymarket]   # any other venue value in saved data is skipped as inconsistent
 fetchers:
+  # display_categories: extra markets saved for the feed only (DISPLAY ONLY, never matched).
+  # Their cards keep every payoff field empty except a display deadline, so the matcher
+  # never pairs them. Each fetcher package parses its own list (card.FetcherConfig is frozen);
+  # `equinox fetch` and `equinox watch` read it through registry.LoadDisplay. Remove a list to
+  # fetch the Fed scope only. See each fetcher's NORMALIZATION.md, "Display-only categories".
+  kalshi:
+    # Series in order of lifetime volume (GET /series?category=<c>&include_volume=true),
+    # keeping series with open events on 2026-10-10. Fed series are refused here.
+    # max_events bounds the category, events_per_series one series (one request per series).
+    display_categories:
+      - name: Economics
+        max_events: 10
+        events_per_series: 1
+        series: [KXCPIYOY, KXCPI, KXCPICOREYOY, KXAAAGASW, KXAAAGASM, KXPAYROLLS, KXU3, KXGDP, KXRECSSNBER, KXDIESELD]
+      - name: Politics
+        max_events: 10
+        events_per_series: 1
+        series: [KXSAVEACT, KXHORMUZNORM, KXTRUMPAPPROVE, KXUSAIRANAGREEMENT, KXTRUMPADMINLEAVE, KXTRUMPOUT27, KXCABOUT, KXTRUMPUFC, KXEOWEEK, KXCRYPTOSTRUCTURE]
+      - name: Crypto
+        max_events: 10
+        events_per_series: 1
+        series: [KXBTCY, KXBTC2026200, KXBTC50VS100, KXBTCMAXMON, KXETHMAXMON, KXBTCMAX100, KXBTCMINMON, KXETHMAXY, KXBTCMAXY, KXXRPMAXMON]
+      - name: Financials
+        max_events: 10
+        events_per_series: 1
+        series: [KXINXPOS, KXIPOANTHROPIC, KXINXY, KXIPHONERELEASE, KXACQANNOUNCEEBAY, KXCAVA, KXNASDAQ100Y, KXTSLA, KXCOMPANYACTIONMERGER, KXIPO]
+      - name: Climate and Weather
+        max_events: 10
+        events_per_series: 1
+        series: [KXRAIN, KXHIGHCHI, KXHIGHNY, KXHIGHLAX, KXHIGHMIA, KXHIGHTPHX, KXHIGHAUS, KXHIGHTATL, KXHIGHTHOU, KXHIGHPHIL]
+      - name: Sports
+        max_events: 10
+        events_per_series: 2
+        series: [KXNFLGAME, KXNCAAFGAME, KXMLBGAME, KXNHLGAME, KXUFCFIGHT]
   polymarket:
     source: polymarket_us         # informational; only Polymarket US is implemented (D-19)
     base_url: https://gateway.polymarket.us   # public market data API, no key (see internal/fetch/polymarket/NORMALIZATION.md)
+    # The API returns no volume and ignores orderBy, so limit takes the first markets in the
+    # venue's own listing order. One request per category; prices come from the listing's
+    # best quotes, so no order book is fetched for display markets.
+    display_categories:
+      - {category: politics, limit: 15}
+      - {category: crypto, limit: 15}
+      - {category: finance, limit: 15}
+      - {category: climate, limit: 15}
+      - {category: sports, limit: 15}
 router:
   reference_venue: kalshi         # requested side is stated relative to this venue's card; wins exact cost ties
   counter_venue: polymarket

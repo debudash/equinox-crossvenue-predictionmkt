@@ -37,7 +37,7 @@ go run ./scripts/seed --db data/demo.db  # SYNTHETIC demo database, no venue cal
 `make acceptance` prints the 20 required and 11 amendment tests. More in docs/deployment.md.
 
 ## How it works
-Four pieces run in order and each reads only what earlier pieces saved. Fetchers are the only code that calls a venue, and they save every raw response before parsing. The matcher compares a Kalshi card with a Polymarket card on seven payoff fields (subject, cutoff operator, value, unit, deadline, decider, unclear-result rule) and returns `same`, `opposite` or `not_same` with a reason. The router compares the cost of the same position on both venues from saved prices, refuses on missing, stale or inconsistent prices, and writes a decision with a plain-sentence reason. A read-only feed shows it all from an in-memory snapshot of the latest completed cycle. `watch` refreshes markets and prices in the background as its own process; SQLite is the only handoff, and one writer runs at a time.
+Four pieces run in order and each reads only what earlier pieces saved. Fetchers are the only code that calls a venue, and they save every raw response before parsing. The matcher compares a Kalshi card with a Polymarket card on seven payoff fields (subject, cutoff operator, value, unit, deadline, decider, unclear-result rule) and returns `same`, `opposite` or `not_same` with a reason. The router compares the cost of the same position on both venues from saved prices, refuses on missing, stale or inconsistent prices, and writes a decision with a plain-sentence reason. A read-only feed shows it all from an in-memory snapshot of the latest completed cycle: an overview with summary cards and one module per category (top 5 posts, every venue represented), Yes prices in green and No prices in red, crosspost badges and the decision log reasons on each post. Besides the Fed markets that can match, both fetchers save display-only markets from a few more real categories (Economics, Politics, Crypto, Financials, Climate and Weather, Sports); those are never matched. `watch` refreshes markets and prices in the background as its own process; SQLite is the only handoff, and one writer runs at a time.
 
 ## Vocabulary coverage
 config/vocab.yaml, V1: Federal Reserve rate markets only.
@@ -48,6 +48,8 @@ config/vocab.yaml, V1: Federal Reserve rate markets only.
 | cutoff_units | `percent`, `usd`, `count` |
 
 Fetch scope: Kalshi series KXFED (per FOMC meeting) and KXFEDFUNDSYEAR (year end); Polymarket US macro markets whose rules mention the federal funds rate.
+
+Display-only categories fetched, never matched: Kalshi Economics (non-Fed: CPI, gas, jobs, GDP), Politics, Crypto, Financials, Climate and Weather and Sports; Polymarket US politics, crypto, finance, climate and sports. They are listed in config/equinox.yaml under `fetchers.<venue>.display_categories` (bounded per category) and fill the feed with real markets and prices, but their cards keep subject, cutoff, decider and unclear_result empty, so the matcher never pairs them. No vocabulary entry was added.
 
 ## Fetcher normalization choices
 Every choice is listed next to the code and in:

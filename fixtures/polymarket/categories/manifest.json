@@ -1,0 +1,13 @@
+{
+  "description": "Display-only categories. The four markets_*.json pages are real Polymarket US public market data recorded 2026-10-10T18:50Z with curl from https://gateway.polymarket.us, unchanged (display prices come from their bestAskQuote and bestBidQuote, so no book is requested). The macro page and its two books reuse the SYNTHETIC files of ../synthetic (one same and one opposite pair with kalshi/categories), so a match run over this scenario has a Fed pair present. The sports page always answers 429 with the rate_limited body (fault).",
+  "routes": [
+    {"path": "/v1/markets", "query": "categories=macro&active=true&closed=false&limit=100&offset=0", "file": "../synthetic/markets_0.json"},
+    {"path": "/v1/markets/synthetic-fedfnds-2026-12-09-gt3pt75/book", "file": "../synthetic/books/synthetic-fedfnds-2026-12-09-gt3pt75.json"},
+    {"path": "/v1/markets/synthetic-fedfnds-2026-12-09-lte3pt75/book", "file": "../synthetic/books/synthetic-fedfnds-2026-12-09-lte3pt75.json"},
+    {"path": "/v1/markets", "query": "categories=politics&active=true&closed=false&limit=3&offset=0", "file": "markets_politics.json"},
+    {"path": "/v1/markets", "query": "categories=crypto&active=true&closed=false&limit=2&offset=0", "file": "markets_crypto.json"},
+    {"path": "/v1/markets", "query": "categories=finance&active=true&closed=false&limit=2&offset=0", "file": "markets_finance.json"},
+    {"path": "/v1/markets", "query": "categories=climate&active=true&closed=false&limit=2&offset=0", "file": "markets_climate.json"},
+    {"path": "/v1/markets", "query": "categories=sports&active=true&closed=false&limit=2&offset=0", "file": "../rate_limited/429.json", "status": 429}
+  ]
+}

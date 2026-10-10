@@ -29,6 +29,10 @@ func init() {
 			if err != nil {
 				return err
 			}
+			// Display-only categories (never matched) from the same config file.
+			if err := registry.LoadDisplay(e.cfgPath, fs); err != nil {
+				return err
+			}
 			return e.writing(ctx, store.KindFetch, func(cycle int64) error {
 				out := cmd.OutOrStdout()
 				for _, r := range registry.FetchAll(ctx, e.st, cycle, fs, fetchTimeout) {

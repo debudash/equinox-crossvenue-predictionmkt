@@ -1,48 +1,77 @@
 {{define "style"}}<style>
-body{margin:0;background:#F2F4F6;color:#17202B;font-family:'Public Sans','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:22px}
-a{color:#1F5FAD}a:hover{color:#163F73}
-header{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between;padding:14px 32px;background:#FFFFFF;border-bottom:1px solid #D3D9E0}
-.brand{color:#17202B;font-weight:700;font-size:18px;text-decoration:none}
-.card{background:#FFFFFF;border:1px solid #D3D9E0;border-radius:8px}
-.pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;box-sizing:border-box}
-.k{background:#17202B;color:#FFFFFF}
-.pm{border:1px solid #17202B;color:#17202B}
-.x{background:#E8F0FA;color:#1F5FAD}
-.muted{color:#5A6573}
-.small{font-size:13px}
-.row{display:flex;gap:16px;padding:16px 20px;border-top:1px solid #E3E7EC}
-.row:first-child{border-top:0}
-.score{flex:0 0 64px;text-align:center;font-size:12px;line-height:16px;color:#5A6573}
-.score b{display:block;font-size:15px;line-height:20px;color:#17202B}
-.title{font-size:17px;line-height:24px;font-weight:600;color:#17202B;text-decoration:none}
-.title:hover{color:#1F5FAD}
-.tabs{display:flex;gap:4px;padding:4px;background:#F2F4F6;border-radius:8px}
-.tab{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:6px;color:#17202B;text-decoration:none;font-weight:400}
-.tab[aria-current]{background:#FFFFFF;box-shadow:0 1px 2px rgba(23,32,43,0.12);font-weight:600}
-.sel{font:inherit;min-height:40px;padding:0 8px;border:1px solid #9AA6B2;border-radius:6px;background:#FFFFFF;color:#17202B}
-.btn{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:6px;font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
-.btn.primary{background:#1F5FAD;color:#FFFFFF;border:0}
-.btn.plain{background:#FFFFFF;border:1px solid #9AA6B2;color:#17202B;min-height:44px;padding:0 24px}
-.banner{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:10px 12px 10px 16px;background:#E8F0FA;border-radius:8px}
-dl{margin:0}dd{margin:0}dt{color:#5A6573}
-.status{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 16px;font-size:14px;line-height:20px}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
-.warn{color:#9A4A08}
-.mkt{padding:20px;display:flex;flex-direction:column;gap:12px}
+:root{--bg:#F3F5F8;--card:#FFFFFF;--line:#DCE2E9;--line2:#E8ECF1;--ink:#14202E;--muted:#5A6573;--accent:#1F5FAD;--accent-soft:#E8F0FA;
+--up:#146C2E;--up-bg:#E7F6EC;--up-line:#B7E1C3;--down:#B42318;--down-bg:#FDECEC;--down-line:#F5C2BE;--warn:#9A4A08;--warn-bg:#FDF3E8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Public Sans','Segoe UI',system-ui,sans-serif;font-size:15px;line-height:22px}
+a{color:var(--accent)}a:hover{color:#163F73}
+.muted{color:var(--muted)}.small{font-size:13px;line-height:18px}
+header.top{background:#0F1A2A;color:#FFFFFF}
+.top-in{max-width:1280px;margin:0 auto;padding:14px 24px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.brand{display:flex;gap:12px;align-items:center;color:#FFFFFF;text-decoration:none}
+.brand b{display:block;font-size:20px;line-height:24px;letter-spacing:0.2px}
+.brand small{display:block;font-size:13px;line-height:18px;color:#B8C4D3}
+.hdr{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap}
+.chip.dark{background:#1C2A3D;color:#D5DEE9}
+.chip.on{background:#123A24;color:#9BE3B4}.chip.off{background:#2A3240;color:#C4CCD6}.chip.bad{background:#4A2A10;color:#F7C08A}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor}
+.wrap{max-width:1280px;margin:0 auto;padding:20px 24px 40px;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.col{flex:999 1 680px;min-width:0;display:flex;flex-direction:column;gap:16px}
+aside{flex:1 1 290px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{padding:14px 16px}.stat .n{font-size:24px;line-height:30px;font-weight:700}.stat .l{font-size:13px;color:var(--muted)}
+.stat.up .n{color:var(--up)}.stat.down .n{color:var(--down)}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:8px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--bg);border-radius:8px}
+.tab{display:inline-flex;align-items:center;min-height:38px;padding:0 14px;border-radius:6px;color:var(--ink);text-decoration:none}
+.tab[aria-current]{background:#FFFFFF;box-shadow:0 1px 2px rgba(20,32,46,0.14);font-weight:600}
+.sel{font:inherit;min-height:38px;padding:0 8px;border:1px solid #9AA6B2;border-radius:6px;background:#FFFFFF;color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border-radius:6px;font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn.primary{background:var(--accent);color:#FFFFFF;border:0}
+.btn.plain{background:#FFFFFF;border:1px solid #9AA6B2;color:var(--ink)}
+.banner{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:10px 12px 10px 16px;background:var(--accent-soft);border-radius:10px}
+.module{padding:16px}
+.module-h{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.module-h h2{margin:0;font-size:17px;line-height:24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.list{display:flex;flex-direction:column;gap:12px}
+.pc{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border:1px solid var(--line2);border-radius:10px;background:#FFFFFF}
+.pc.match{border-color:var(--up-line);box-shadow:inset 3px 0 0 var(--up)}
+.pc-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pc-row{display:flex;gap:12px;align-items:flex-start}
+.score{flex:0 0 58px;text-align:center;font-size:12px;line-height:16px;color:var(--muted)}
+.score b{display:block;font-size:15px;line-height:20px;color:var(--ink)}
+.title{font-size:16px;line-height:22px;font-weight:600;color:var(--ink);text-decoration:none}
+.title:hover{color:var(--accent)}
+.lead{font-size:13px;line-height:18px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.k{background:#14202E;color:#FFFFFF}.pm{border:1px solid #14202E;color:#14202E}
+.x{background:var(--up-bg);color:var(--up)}
+.prices{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.px{display:inline-flex;gap:6px;align-items:baseline;padding:4px 10px;border-radius:6px;font-size:14px;border:1px solid var(--line)}
+.px b{font-weight:700}
+.px.yes{background:var(--up-bg);border-color:var(--up-line);color:var(--up)}
+.px.no{background:var(--down-bg);border-color:var(--down-line);color:var(--down)}
+.px.none{background:#F3F5F8;color:var(--muted)}
+.status{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;font-size:14px;line-height:20px;margin:0}
+.status dt{color:var(--muted)}.status dd{margin:0}
+.ok{color:var(--up)}.warn{color:var(--warn)}.bad{color:var(--down)}
+.mkt{padding:18px;display:flex;flex-direction:column;gap:12px}
 .head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
 .mt{font-size:16px;line-height:22px;font-weight:600}
-.prices{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.px{display:inline-flex;gap:6px;align-items:baseline;padding:6px 12px;border:1px solid #D3D9E0;border-radius:6px;font-size:14px}
-.px b{font-weight:600}
-.bot{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 12px;padding:12px 16px;background:#F7F8FA;border-radius:6px;border-left:3px solid #1F5FAD;font-size:14px;line-height:20px}
-.bot.refused{border-left-color:#C2620F}
-.bh{grid-column:1 / -1;font-size:13px;color:#5A6573}
-.lab{color:#5A6573}
+.bot{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 12px;padding:12px 16px;background:#F7F9FB;border-radius:8px;border-left:3px solid var(--up);font-size:14px;line-height:20px}
+.bot.refused{border-left-color:var(--down)}
+.bh{grid-column:1 / -1;font-size:13px;color:var(--muted)}
+.lab{color:var(--muted)}
 .more{grid-column:1 / -1}
-code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;padding:1px 6px;border-radius:4px;background:#E9EDF1;color:#17202B}
-code.no{background:#FDF3E8;color:#9A4A08}
+code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;padding:1px 6px;border-radius:4px;background:#E9EDF1;color:var(--ink)}
+.bot code{background:var(--up-bg);color:var(--up)}
+.bot code.no,code.no{background:var(--down-bg);color:var(--down)}
 .fields{margin:10px 0 0;display:grid;grid-template-columns:140px minmax(0,1fr);gap:6px 16px;font-size:14px;line-height:20px}
-@media (max-width:640px){header{padding:12px 16px}.row{padding:12px}.score{flex-basis:48px}}
+.fields dd{margin:0}
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--muted)}
+@media (max-width:640px){.top-in,.wrap{padding-left:16px;padding-right:16px}.score{flex-basis:46px}}
 </style>{{end}}
 
 {{define "head"}}<!doctype html>
@@ -50,61 +79,102 @@ code.no{background:#FDF3E8;color:#9A4A08}
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Equinox feed</title>
+<title>Equinox · Cross-venue market router</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
 {{template "style"}}
 </head>
 <body>
-<header><a href="/" class="brand">Equinox</a><span class="muted" style="font-size:14px">Read only · cycle {{.Snap.Cycle}} · completed {{stampOf .Snap.CompletedAt}}</span></header>
+<header class="top"><div class="top-in">
+<a href="/" class="brand"><svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="8" fill="#1F5FAD"/><path d="M9 12h16M9 22h16" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/><path d="M14 8l-5 4 5 4M20 18l5 4-5 4" fill="none" stroke="#9BE3B4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Equinox</b><small>Cross-venue market router · Kalshi and Polymarket US</small></span></a>
+<div class="hdr">
+{{template "watcher" .}}
+<span class="chip dark">Simulation · places no orders</span>
+<span class="chip dark">Read only · cycle {{.Snap.Cycle}} · updated {{stampOf .Snap.CompletedAt}}</span>
+</div>
+</div></header>
 {{end}}
+
+{{define "watcher"}}{{if eq .Watch "running"}}<span class="chip on"><span class="dot"></span>Feed watcher active</span>{{else if eq .Watch "stale"}}<span class="chip bad"><span class="dot"></span>Feed watcher not responding</span>{{else}}<span class="chip off"><span class="dot"></span>Feed watcher stopped</span>{{end}}{{end}}
 
 {{define "banner"}}{{if .Banner}}<div class="banner" role="status"><span>New data saved at {{stampOf .Latest.CompletedAt}}.</span> <a href="{{.Reload}}" class="btn primary">Reload</a></div>{{end}}
 {{if .Note}}<div class="banner" role="status"><span>{{.Note}}</span></div>{{end}}{{end}}
 
 {{define "flair"}}<span class="pill {{if eq .Venue .Reference}}k{{else}}pm{{end}}">{{venueName .Venue}}</span>{{end}}
 
-{{define "sidebar"}}<aside style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:16px">
-<section class="card" style="padding:20px;display:flex;flex-direction:column;gap:12px">
-<h2 style="margin:0;font-size:16px">Status</h2>
+{{define "prices"}}{{if ne .Yes.Value "-"}}<span class="px yes">Yes <b>{{.Yes.Value}}</b></span>{{else}}<span class="px none">Yes <b>-</b></span>{{end}}{{if ne .No.Value "-"}}<span class="px no">No <b>{{.No.Value}}</b></span>{{else}}<span class="px none">No <b>-</b></span>{{end}}{{end}}
+
+{{define "postcard"}}{{with .Post}}<article class="pc{{if .Matched}} match{{end}}" data-post="{{.Key}}">
+<div class="pc-row">
+<div class="score"><b>{{.Score}}</b>24h vol</div>
+<div style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px">
+<div class="pc-top">{{if not $.InModule}}<span class="muted small">r/{{or .Category "uncategorized"}}</span>{{end}}{{template "flair" (flairOf .Venue $.Reference)}}{{range .Badges}}<span class="pill x">{{.}}</span>{{end}}</div>
+<a href="{{postHref $.Cycle .Key}}" class="title">{{.Event}}</a>
+{{with .Lead}}<div class="lead">{{.Card.Record.Title}}</div><div class="prices">{{template "prices" .}}</div>{{end}}
+<span class="muted small">{{len .Markets}} markets · closes {{.Closes}}{{if .OutOfVocab}} · display only, not matched{{else if .PricesSaved}} · prices saved {{.PricesSaved}}{{end}}</span>
+</div>
+</div>
+</article>{{end}}{{end}}
+
+{{define "toolbar"}}<div class="card toolbar">
+<nav aria-label="View" class="tabs">{{range .Sorts}}<a href="{{.Href}}" class="tab"{{if .On}} aria-current="page"{{end}}>{{.Label}}</a>{{end}}</nav>
+<form method="get" action="/" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+{{if .Sort}}<input type="hidden" name="sort" value="{{.Sort}}">{{end}}
+<label style="display:flex;gap:8px;align-items:center"><span class="muted">Venue</span><select name="venue" class="sel"><option value="">All</option>{{range .Venues}}<option value="{{.}}"{{if eq . $.Venue}} selected{{end}}>{{venueName .}}</option>{{end}}</select></label>
+<label style="display:flex;gap:8px;align-items:center"><span class="muted">Category</span><select name="category" class="sel"><option value="">All</option>{{range .Categories}}<option value="{{.}}"{{if eq . $.Category}} selected{{end}}>{{.}}</option>{{end}}</select></label>
+<button type="submit" class="btn plain">Apply</button>
+</form>
+</div>{{end}}
+
+{{define "sidebar"}}<aside>
+<section class="card" style="padding:18px;display:flex;flex-direction:column;gap:12px">
+<h2 style="margin:0;font-size:16px">Data freshness</h2>
+{{if eq .Watch "running"}}<p style="margin:0"><b class="ok">Feed watcher active.</b> <span class="muted">It checks both venues for markets{{if .Discovery}} every {{.Discovery}}{{end}} and refreshes prices{{if .Prices}} every {{.Prices}}{{end}}; this page offers a reload when a check completes.</span></p>
+{{else if eq .Watch "stale"}}<p style="margin:0" class="warn"><b>Feed watcher not responding.</b> It holds the run lock but nothing has completed since {{stampOf .Latest.CompletedAt}}; it may have crashed (see <code>equinox unlock</code>).</p>
+{{else}}<p style="margin:0"><b>Feed watcher stopped.</b> <span class="muted">Showing data saved at {{stampOf .Latest.CompletedAt}}. Prices older than 10 minutes are not used for routing.</span></p>{{end}}
 <dl class="status">
-<dt>Refresh</dt><dd>{{if eq .Watch "running"}}<span class="dot" style="background:#2E7D4F"></span>watch running{{else if eq .Watch "stale"}}<span class="warn"><span class="dot" style="background:#C2620F"></span>watch holds the lock but no cycle has completed since {{stampOf .Latest.CompletedAt}}; it may have crashed (see equinox unlock)</span>{{else}}<span class="dot" style="background:#9AA6B2"></span>watch stopped; last cycle completed {{stampOf .Latest.CompletedAt}}{{end}}</dd>
-<dt>Discovery</dt><dd>{{if .Discovery}}every {{.Discovery}}, {{end}}last {{stampOf .Status.LastDiscovery}}</dd>
-<dt>Prices</dt><dd>{{if .Prices}}every {{.Prices}}, {{end}}last {{stampOf .Status.LastPrices}}</dd>
-{{range .Status.Venues}}<dt>{{venueName .Venue}}</dt>{{if .Failed}}<dd class="warn">Last fetch failed at {{stampOf .At}}. {{if .LastOK.IsZero}}No successful fetch yet.{{else}}Showing data from {{stampOf .LastOK}}.{{end}}</dd>{{else}}<dd>{{.Saved}} saved at {{stampOf .At}}</dd>{{end}}
+<dt>Market check</dt><dd>{{if .Discovery}}every {{.Discovery}} · {{end}}last {{stampOf .Status.LastDiscovery}}</dd>
+<dt>Price refresh</dt><dd>{{if .Prices}}every {{.Prices}} · {{end}}last {{stampOf .Status.LastPrices}}</dd>
+{{range .Status.Venues}}<dt>{{venueName .Venue}}</dt>{{if .Failed}}<dd class="warn">Last fetch failed at {{stampOf .At}}. {{if .LastOK.IsZero}}No successful fetch yet.{{else}}Showing data from {{stampOf .LastOK}}.{{end}}</dd>{{else}}<dd><span class="ok">●</span> {{.Saved}} saved at {{stampOf .At}}</dd>{{end}}
 {{end}}
-<dt>This page</dt><dd>cycle {{.Snap.Cycle}} ({{.Snap.Kind}}); newest cycle {{.Latest.Cycle}}</dd>
+<dt>This page</dt><dd>cycle {{.Snap.Cycle}} ({{.Snap.Kind}}); newest {{.Latest.Cycle}}</dd>
 </dl>
 </section>
-<section class="card" style="padding:20px;display:flex;flex-direction:column;gap:8px">
-<h2 style="margin:0;font-size:16px">Coverage</h2>
-<p style="margin:0;font-size:14px;line-height:20px" class="muted">V1 matches Federal Reserve rate markets only. Other posts show prices without a match badge.</p>
+<section class="card" style="padding:18px;display:flex;flex-direction:column;gap:8px">
+<h2 style="margin:0;font-size:16px">How to read this</h2>
+<div class="legend"><span class="px yes">Yes <b>price</b></span><span class="px no">No <b>price</b></span><span class="pill x">Same bet on …</span></div>
+<p style="margin:0;font-size:14px;line-height:20px" class="muted">Prices are the cost to buy each side, from 0 to 1 dollar. A green badge means the same bet is listed on the other venue. Only Federal Reserve rate markets are matched in V1; other categories show prices without a match.</p>
 </section>
 </aside>{{end}}
 
-{{define "feed"}}{{template "head" .Frame}}
-<main style="max-width:1216px;margin:0 auto;padding:24px 32px 40px;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
-<div style="flex:999 1 640px;min-width:0;display:flex;flex-direction:column;gap:16px">
+{{define "overview"}}{{template "head" .Frame}}
+<main class="wrap"><div class="col">
 {{template "banner" .Frame}}
-<div class="card" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:8px">
-<nav aria-label="Sort" class="tabs">{{range .Sorts}}<a href="{{.Href}}" class="tab"{{if .On}} aria-current="page"{{end}}>{{.Label}}</a>{{end}}</nav>
-<form method="get" action="/" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding-right:4px">
-<input type="hidden" name="sort" value="{{.Sort}}">
-<label style="display:flex;gap:8px;align-items:center"><span class="muted">Venue</span><select name="venue" class="sel"><option value="">All</option>{{range .Venues}}<option value="{{.}}"{{if eq . $.Venue}} selected{{end}}>{{venueName .}}</option>{{end}}</select></label>
-<label style="display:flex;gap:8px;align-items:center"><span class="muted">Category</span><select name="category" class="sel"><option value="">All</option>{{range .Categories}}<option value="{{.}}"{{if eq . $.Category}} selected{{end}}>{{.}}</option>{{end}}</select></label>
-<button type="submit" class="btn plain" style="min-height:40px;padding:0 14px">Apply</button>
-</form>
+<section class="stats" aria-label="Summary">
+{{range $v, $n := .Stats.Cards}}<div class="card stat"><div class="n">{{$n}}</div><div class="l">{{venueName $v}} markets tracked</div></div>{{end}}
+<div class="card stat"><div class="n">{{.Stats.Pairs}}</div><div class="l">pairs compared</div></div>
+<div class="card stat{{if or .Stats.Same .Stats.Opposite}} up{{end}}"><div class="n">{{add .Stats.Same .Stats.Opposite}}</div><div class="l">matched ({{.Stats.Same}} same, {{.Stats.Opposite}} opposite)</div></div>
+<div class="card stat{{if .Stats.Routed}} up{{end}}"><div class="n">{{.Stats.Routed}}</div><div class="l">routes chosen · {{.Stats.Refused}} refused</div></div>
+</section>
+{{template "toolbar" .}}
+{{range .Sections}}<section class="card module" aria-label="r/{{.Category}}">
+<div class="module-h"><h2>r/{{or .Category "uncategorized"}}</h2><span class="muted small">top {{len .Top}} of {{.Total}} posts{{if .Matched}} · <span class="ok">{{.Matched}} matched</span>{{end}} · <a href="{{.Href}}">See all</a></span></div>
+<div class="grid">{{range .Top}}{{template "postcard" (moduleCardOf . $.Snap.Cycle $.Reference)}}{{end}}</div>
+</section>
+{{else}}<p class="muted">No posts match these filters.</p>{{end}}
 </div>
-<section class="card" aria-label="Posts">
-{{range .Posts}}<article class="row" data-post="{{.Key}}">
-<div class="score"><b>{{.Score}}</b>24h vol</div>
-<div style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px">
-<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="muted small">r/{{or .Category "uncategorized"}}</span>{{template "flair" (flairOf .Venue $.Reference)}}{{range .Badges}}<span class="pill x">{{.}}</span>{{end}}</div>
-<a href="{{postHref $.Snap.Cycle .Key}}" class="title">{{.Event}}</a>
-<span class="muted small">{{len .Markets}} markets · closes {{.Closes}}{{if .OutOfVocab}} · not in the V1 vocabulary{{else if .PricesSaved}} · prices saved {{.PricesSaved}}{{end}}</span>
-</div>
-</article>
-{{else}}<p class="muted" style="padding:16px 20px;margin:0">No posts match these filters.</p>{{end}}
+{{template "sidebar" .Frame}}
+</main>
+</body>
+</html>{{end}}
+
+{{define "feed"}}{{template "head" .Frame}}
+<main class="wrap"><div class="col">
+{{template "banner" .Frame}}
+{{template "toolbar" .}}
+<section class="list" aria-label="Posts">
+{{range .Posts}}{{template "postcard" (cardOf . $.Snap.Cycle $.Reference)}}
+{{else}}<p class="muted">No posts match these filters.</p>{{end}}
 </section>
 <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
 {{if .More}}<a href="{{.More}}" class="btn plain">Load more</a>{{end}}
@@ -117,25 +187,25 @@ code.no{background:#FDF3E8;color:#9A4A08}
 </html>{{end}}
 
 {{define "post"}}{{template "head" .Frame}}
-<main style="max-width:960px;margin:0 auto;padding:24px 32px 40px;display:flex;flex-direction:column;gap:16px">
+<main class="wrap"><div class="col" style="flex-basis:900px">
 {{template "banner" .Frame}}
-<a href="{{.Back}}" style="align-self:flex-start;padding:8px 0">Back to feed</a>
+<a href="{{.Back}}" style="align-self:flex-start;padding:4px 0">Back to feed</a>
 {{with .Post}}
 <section class="card" style="padding:20px;display:flex;flex-direction:column;gap:8px">
-<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span class="muted small">r/{{or .Category "uncategorized"}}</span>{{template "flair" (flairOf .Venue $.Reference)}}<span class="muted small">24h vol {{.Score}}</span></div>
+<div class="pc-top"><span class="muted small">r/{{or .Category "uncategorized"}}</span>{{template "flair" (flairOf .Venue $.Reference)}}<span class="muted small">24h vol {{.Score}}</span>{{range .Badges}}<span class="pill x">{{.}}</span>{{end}}</div>
 <h1 style="margin:0;font-size:24px;line-height:30px">{{.Event}}</h1>
 {{if .URL}}<a href="{{.URL}}" style="align-self:flex-start;font-size:14px">Open on {{venueName .Venue}}</a>{{end}}
 </section>
 <h2 style="margin:8px 0 0;font-size:16px">{{len .Markets}} markets</h2>
 {{range .Markets}}<article class="card mkt" data-market="{{.Card.Ref}}">
 <div class="head"><span class="mt">{{.Card.Record.Title}}</span>{{if .Badge}}<span class="pill x">{{.Badge}}</span>{{end}}</div>
-<div class="prices"><span class="px">Yes <b>{{.Yes.Value}}</b></span><span class="px">No <b>{{.No.Value}}</b></span><span class="muted small">saved {{.Yes.PricedAt}}</span>{{if .Card.Record.Volume24h}}<span class="muted small">· 24h vol {{.Card.Record.Volume24h}}</span>{{end}}</div>
+<div class="prices">{{template "prices" .}}<span class="muted small">saved {{.Yes.PricedAt}}</span>{{if .Card.Record.Volume24h}}<span class="muted small">· 24h vol {{.Card.Record.Volume24h}}</span>{{end}}</div>
 <details>
-<summary style="cursor:pointer;font-size:14px;color:#1F5FAD">Payoff fields</summary>
+<summary style="cursor:pointer;font-size:14px;color:var(--accent)">Payoff fields</summary>
 <dl class="fields">{{range .Fields}}<dt class="muted">{{.Name}}</dt><dd><code{{if not .Set}} class="no"{{end}}>{{if .Set}}{{.Value}}{{else}}empty{{end}}</code></dd>{{end}}</dl>
 </details>
 {{if .Bot}}<div class="bot{{if .Refused}} refused{{end}}">
-<span class="bh"><b style="color:#17202B">equinox-bot</b> · from the log, {{(index .Bot 0).DecidedAt}}</span>
+<span class="bh"><b style="color:var(--ink)">equinox-bot</b> · from the decision log, {{(index .Bot 0).DecidedAt}}</span>
 {{range .Bot}}<span class="lab">{{.Label}}</span><span><code{{if .Refused}} class="no"{{end}}>{{.Code}}</code> {{.Reason}}{{if .Other}} <span class="muted">vs {{.Other}}</span>{{end}}</span>
 {{end}}
 {{if .Others}}<details class="more"><summary class="muted" style="cursor:pointer">{{len .Others}} more comparisons, all not_same</summary>
@@ -145,12 +215,14 @@ code.no{background:#FDF3E8;color:#9A4A08}
 </article>
 {{end}}
 {{end}}
+</div>
+{{template "sidebar" .Frame}}
 </main>
 </body>
 </html>{{end}}
 
 {{define "empty"}}<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Equinox feed</title>{{template "style"}}</head>
-<body><header><span class="brand">Equinox</span><span class="muted">Read only</span></header>
-<main style="max-width:960px;margin:0 auto;padding:24px 32px"><div class="card" style="padding:20px">No cycle has completed yet. The feed shows data once a fetch, match or route cycle completes.</div></main></body></html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Equinox · Cross-venue market router</title>{{template "style"}}</head>
+<body><header class="top"><div class="top-in"><span class="brand"><span><b>Equinox</b><small>Cross-venue market router · Kalshi and Polymarket US</small></span></span></div></header>
+<main class="wrap"><div class="card" style="padding:20px;flex:1 1 auto">No cycle has completed yet. The feed shows data once a fetch, match or route cycle completes; with the feed watcher running that takes about a minute.</div></main></body></html>
 {{end}}
