@@ -108,7 +108,7 @@ code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;padding:
 <div class="pc-row">
 <div class="score"><b>{{.Score}}</b>24h vol</div>
 <div style="flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:6px">
-<div class="pc-top"><span class="muted small">r/{{or .Category "uncategorized"}}</span>{{template "flair" (flairOf .Venue $.Reference)}}{{range .Badges}}<span class="pill x">{{.}}</span>{{end}}</div>
+<div class="pc-top">{{if not $.InModule}}<span class="muted small">r/{{or .Category "uncategorized"}}</span>{{end}}{{template "flair" (flairOf .Venue $.Reference)}}{{range .Badges}}<span class="pill x">{{.}}</span>{{end}}</div>
 <a href="{{postHref $.Cycle .Key}}" class="title">{{.Event}}</a>
 {{with .Lead}}<div class="lead">{{.Card.Record.Title}}</div><div class="prices">{{template "prices" .}}</div>{{end}}
 <span class="muted small">{{len .Markets}} markets · closes {{.Closes}}{{if .OutOfVocab}} · not in the V1 vocabulary{{else if .PricesSaved}} · prices saved {{.PricesSaved}}{{end}}</span>
@@ -159,7 +159,7 @@ code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;padding:
 {{template "toolbar" .}}
 {{range .Sections}}<section class="card module" aria-label="r/{{.Category}}">
 <div class="module-h"><h2>r/{{or .Category "uncategorized"}}</h2><span class="muted small">top {{len .Top}} of {{.Total}} posts{{if .Matched}} · <span class="ok">{{.Matched}} matched</span>{{end}} · <a href="{{.Href}}">See all</a></span></div>
-<div class="grid">{{range .Top}}{{template "postcard" (cardOf . $.Snap.Cycle $.Reference)}}{{end}}</div>
+<div class="grid">{{range .Top}}{{template "postcard" (moduleCardOf . $.Snap.Cycle $.Reference)}}{{end}}</div>
 </section>
 {{else}}<p class="muted">No posts match these filters.</p>{{end}}
 </div>

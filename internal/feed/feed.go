@@ -23,6 +23,10 @@ var pages = template.Must(template.New("").Funcs(template.FuncMap{
 	"cardOf": func(p *Post, cycle int64, reference string) postCard {
 		return postCard{Post: p, Cycle: cycle, Reference: reference}
 	},
+	// moduleCardOf is cardOf inside a category module, where the category is the heading.
+	"moduleCardOf": func(p *Post, cycle int64, reference string) postCard {
+		return postCard{Post: p, Cycle: cycle, Reference: reference, InModule: true}
+	},
 	"add": func(a, b int) int { return a + b },
 	// flairOf pairs a venue with the reference venue for the flair template.
 	"flairOf": func(venue, reference string) struct{ Venue, Reference string } {
@@ -39,6 +43,7 @@ type postCard struct {
 	Post      *Post
 	Cycle     int64
 	Reference string
+	InModule  bool // inside a category module, which already names the category
 }
 
 // Server renders the feed. It reads only from the cache.
