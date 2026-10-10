@@ -101,3 +101,13 @@ func unknownFees(okA, okB bool, a, b card.MarketRef) string {
 	}
 	return b.Venue
 }
+
+// UsablePrice is the buy price Decide would use from p at asOf, or empty when
+// it is missing, saved after asOf or stale. watch compares it with the price
+// the last route record used to decide whether a needed price changed.
+func UsablePrice(p *card.PriceRecord, asOf time.Time, maxAge time.Duration) card.Opt[card.Micros] {
+	if _, problem := usable(p, card.MarketRef{}, "", asOf, maxAge); problem != "" {
+		return card.None[card.Micros]()
+	}
+	return p.BuyPrice
+}
