@@ -1,6 +1,6 @@
 # Status
 
-Current wave: 4 done; all tasks in review on MRs !1 to !4, awaiting owner merge
+Current wave: done; all tasks merged to main
 
 ## Log
 - 2026-10-07: Planning pack generated.
@@ -30,3 +30,4 @@ Current wave: 4 done; all tasks in review on MRs !1 to !4, awaiting owner merge
 - 2026-10-10: make test lint guard pass; make acceptance 20 of 20 required, 11 of 11 amendment. Stopped at the wave boundary before T-30.
 - 2026-10-10: Owner approved T-30 with: measured-only verdict wording, mixed demo (live refusals, SYNTHETIC routing), Docker without a cloud deploy, no optional fixes.
 - 2026-10-10: T-30 in review on wave-1: README verdict and limitations, docs/metrics.md and docs/test-results.md from a real session, match audit (10 not_same verified against the log, 0 false matches), citations (no Verify rows left; SR 11-7 found superseded by SR 26-2), Dockerfile built and run, Cloud Run marked untested, demo dry run. Added scripts/seed (SYNTHETIC demo database, no network). Fixed during the dry run: route reasons said "Buy ... on kalshi" even when choosing the other venue (now "Compared ..."); seed now stamps whole seconds so a typed --as-of is not before its prices.
+- 2026-10-10: Owner asked to merge. !1 to !4 merged to main in order (!2 to !4 retargeted to main). make test lint guard and make acceptance (20 of 20, 11 of 11) pass on main. GitLab pipelines stay pending: no runner appears to be available.
