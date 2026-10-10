@@ -1,0 +1,6 @@
+{
+  "description": "Fault: the Polymarket US markets list always answers 429 with the documented body (docs.polymarket.us, Rate Limits).",
+  "routes": [
+    {"path": "/v1/markets", "query": "categories=macro&active=true&closed=false&limit=100&offset=0", "file": "429.json", "status": 429}
+  ]
+}
