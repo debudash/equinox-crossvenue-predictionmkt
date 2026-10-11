@@ -6,7 +6,7 @@ Narrated walkthrough recorded from a local copy of the deployed build (same code
 
 | Time | Scene | Shows |
 |---|---|---|
-| 0:00 | The problem and three challenges | One Fed question at 0.93 on Kalshi and 0.99 on Polymarket; one market language, never pay for the wrong bet, always the lower price |
+| 0:00 | Equinox: the problem and three challenges | "This is Equinox." One Fed question at two prices (NO: 0.15 on Kalshi, 0.99 on Polymarket); one market language, never pay for the wrong bet, always the lower price |
 | 0:12 | How it was built | The agent build factory (requirements, AGENTS.md rules, task files in gated waves); work in progress |
 | 0:20 | Internal representation | `card.Payoff`: seven fields decide the bet; record fields are display only |
 | 0:30 | Finding equivalent markets | `match.Compare`: exact equality, no score, no model; zero wrong bets at the cost of some missed ones |
@@ -17,7 +17,7 @@ Narrated walkthrough recorded from a local copy of the deployed build (same code
 | 1:31 | Venue policy, the model reads | Nightly versioned policy snapshot; every value quoted word for word |
 | 1:43 | Rules measure, human decides, router routes | 9 near misses; a decision with a reason under policy 2026-10-11.1; Buy NO on Kalshi, logged once |
 | 1:51 | The learning loop | Each review becomes a few-shot example and an eval case; the human gate stays |
-| 2:01 | The answers and the business calls | Quarter-point step, venue discretion, compare outcomes not wording; live URL |
+| 2:01 | The answers and the business calls | Do we trust the quarter-point grid? Is venue discretion an acceptable risk? Should matching follow outcomes, not wording? Live URL |
 
 Code-quality evidence is tagged on screen as it appears: separation of concerns, documented assumptions (A-10, A-11), readable code, testing (tests 1-7, test 15, 20 of 20 and 11 of 11), no venue logic in routing (`make guard`).
 
