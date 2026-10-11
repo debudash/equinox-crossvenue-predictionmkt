@@ -16,3 +16,4 @@ Status: todo | in-progress | in-review | blocked | merged. Updated after every s
 | T-22 | Integration and red-team tests | 2 | 16, 17, 19, 20 (end to end) | Claude Code subagent (Opus 5.5) | wave-1 | !4 | merged | |
 | T-23 | Background watch scheduler | 3 | W1-W4, W8, W9, W11 | Claude Code (Opus 5.5) | wave-1 | !4 | merged | |
 | T-30 | Evidence and ship | 4 | 20 of 20, W1-W11 | Claude Code (Opus 5.5) | wave-1 | !4 | merged | |
+| P-01 | Near-miss proposal prototype, watch payoff-only trigger (D-21), Railway combined image, demo video | added scope | W1 updated; prototype 41 tests | Claude Code (Opus 5.5) | proposal-prototype | !13 | merged | |

@@ -101,6 +101,8 @@ Key choices: deadline is the moment the outcome is read (Kalshi KXFED event stri
 | Demo_Script.md | Timed demo |
 | TASKS.md, docs/tasks/, docs/status.md | Agent task board, specs, build log |
 | docs/ai-usage-log.md | AI usage disclosure |
+| prototype/ | Near-miss proposal (added scope, outside the core), its tests and the combined Railway image |
+| Demo_Script.md | Recorded video scene list and the live demo script |
 | Wireframes | See "Wireframes" below |
 
 ## Wireframes
@@ -116,4 +118,4 @@ What changed from the approved wireframes, and why: the filter bar has an Apply 
 Venues have absorbed normalization layers rather than adopting neutral ones. The party with the incentive to standardize equivalence is a neutral intermediary that routes across venues. The measured blocker here, the same economic question listed with different boundary wording, is exactly what a shared contract vocabulary would remove. docs/spec.md drafts the card model as an extension of the FINOS Common Domain Model that PEAK6 / Apex could sponsor (ADR-007).
 
 ## AI usage
-No AI in matching or routing (ADR-006). Development was AI-assisted; see docs/ai-usage-log.md.
+No AI in matching or routing (ADR-006). Development was AI-assisted; see docs/ai-usage-log.md. The added-scope proposal in prototype/ uses an LLM only to propose field readings, each quoted from the market's rules or a versioned venue-policy clause; deterministic rules and a person decide, and the core never imports it.

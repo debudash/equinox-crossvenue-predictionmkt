@@ -25,9 +25,9 @@ The code is evidence. The README verdict answers these from measured results onl
 | NFR-4 | Separation of concerns | Fetchers, matcher, router, feed as separate pieces reading only saved data |
 | NFR-5 | No hardcoded venue logic in routing | Venue roles from config; guard forbids venue names in matcher and router |
 | NFR-6 | Reasonable test coverage | 20 required tests plus red-team tests |
-| NFR-7 | Go, GCP preferred, local acceptable | Go + SQLite, local; Docker image for optional Cloud Run |
+| NFR-7 | Go, GCP preferred, local acceptable | Go + SQLite; runs locally and as one Docker image, hosted on Railway (ADR-009 records why not GCP: `watch` needs an always-on process over a persistent SQLite file) |
 | NFR-8 | Reusable foundation for more venues | New venue = new fetcher + vocabulary entries; matcher and router unchanged |
-| NFR-9 | AI usage documented | No AI in the product; development AI usage logged (docs/ai-usage-log.md) |
+| NFR-9 | AI usage documented | No AI in the core's match or route (ADR-006); development AI usage logged (docs/ai-usage-log.md). The added-scope proposal in prototype/ calls an LLM outside the core, behind a human decision |
 
 ## Deliverables
 | Deliverable | Where |
@@ -35,6 +35,7 @@ The code is evidence. The README verdict answers these from measured results onl
 | Source code | repo |
 | Technical documentation | docs/architecture.md, docs/spec.md, docs/adr/, fetcher NORMALIZATION.md files |
 | Demo video | https://youtu.be/egQVWj9Dtno; scene list in Demo_Script.md |
+| Proposal prototype (added scope) | prototype/README.md; live at /app |
 | Test results | `make acceptance` output in docs/test-results.md, docs/metrics.md |
 | AI usage log | docs/ai-usage-log.md |
 | Deployment guide | README.md, docs/deployment.md |
@@ -50,6 +51,7 @@ The code is evidence. The README verdict answers these from measured results onl
 | AI | No model in match or route | ADR-006 |
 | Standards | Spec written as a draft that extends FINOS CDM; no patent | ADR-007 |
 | Freshness and speed | Background watch; feed served from an in-memory snapshot of the latest completed cycle | ADR-008 |
+| Hosting | Railway, one image, persistent volume; the proposal app shares the service at /app | ADR-009 |
 
 ## Scope
 V1 vocabulary covers Federal Reserve rate markets only. Out of scope items are listed in docs/build-requirements.md and repeated in the README.

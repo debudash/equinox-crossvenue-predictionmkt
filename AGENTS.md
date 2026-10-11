@@ -13,7 +13,7 @@ A simulation that fetches Kalshi and Polymarket markets, stores each as one mark
 - SQLite via `modernc.org/sqlite` (pure Go, no cgo).
 - Feed: Go `html/template`, server-rendered, no frontend framework, no JavaScript required.
 - Allowed third-party deps: `modernc.org/sqlite`, `gopkg.in/yaml.v3`, `github.com/spf13/cobra`, `github.com/stretchr/testify` (tests only). Anything else needs approval.
-- No language model anywhere in the product.
+- No language model anywhere in the core (cmd/, internal/, config/). prototype/ is a separate, added-scope proposal that may call an LLM; the core never imports it and it opens the core database read-only.
 
 ## Commands
 ```
