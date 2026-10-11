@@ -1,0 +1,26 @@
+# Published venue policy documents. Snapshotted daily (python -m proto policies refresh).
+# applies_to: venue, plus series (Kalshi ticker prefix before the first "-"); "*" means every market on the venue.
+# Found 2026-10-11: Kalshi links its contract terms per series from GET /trade-api/v2/series/<ticker>
+# (contract_terms_url); Polymarket US files its rulebook with the CFTC as QCX LLC.
+
+sources:
+  - id: kalshi-fed-terms
+    venue: kalshi
+    series: [KXFED]
+    title: "Kalshi contract terms: Will the target federal funds rate be above/below <percent>? (Rule 100.5)"
+    url: https://assets.kalshi.com/contract_terms/FED.pdf
+
+  - id: kalshi-econstat-terms
+    venue: kalshi
+    series: [KXFEDFUNDSYEAR]
+    title: "Kalshi contract terms: ECONSTAT (generic economic statistic contract; KXFEDFUNDSYEAR is listed under it)"
+    url: https://assets.kalshi.com/contract_terms/ECONSTAT.pdf
+
+  - id: polymarket-us-rulebook
+    venue: polymarket
+    series: ["*"]
+    title: "Polymarket US (QCX LLC) Rulebook, certified with the CFTC 2026-06-17"
+    url: https://www.cftc.gov/filings/orgrules/rules0617266794.pdf
+
+# Known gap: the KalshiEX Rulebook itself (Rules 6.3 and 7.1 referenced by the terms) has no stable
+# official URL we could find; only third-party copies. Not snapshotted until one is confirmed.

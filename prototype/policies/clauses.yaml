@@ -1,0 +1,83 @@
+# Codified clauses: the sentences from venue policy documents that bear on a payoff field.
+# Each text is copied from the source. The daily refresh checks every clause is still present
+# (letters and digits compared, so PDF spacing does not matter) and flags any that disappear.
+# field: the payoff field it bears on, or "special" for a settlement clause no field captures.
+# value: what the clause implies for that field, when it implies one.
+
+clauses:
+  # ---- Kalshi KXFED (meeting markets) ------------------------------------------------------------
+  - id: KFED-unclear
+    source: kalshi-fed-terms
+    field: unclear_result
+    value: resolves_no
+    text: "If no data is available on the Expiration Date at the Expiration Time, the Contract resolves to No."
+  - id: KFED-observation
+    source: kalshi-fed-terms
+    field: observation_time
+    text: "The Expiration Date of the Contract will be the sooner of the first of the first 2:05 PM ET following the release of a Federal Reserve statement for <meeting> and one week following the last day of <meeting>."
+  - id: KFED-grid
+    source: kalshi-fed-terms
+    field: cutoff_value
+    text: "Kalshi may list “Will the target federal funds rate be <above/below> <percent>?” contracts with <percent> levels that fall within an inclusive range between a maximum value of 20.00% and a minimum value of 0.00% at consecutive increments of 0.05%."
+  - id: KFED-strict
+    source: kalshi-fed-terms
+    field: cutoff_op
+    value: gt
+    text: "The Payout Criterion encompasses Expiration Values that are strictly <greater than/less than> <percent> for <meeting>."
+  - id: KFED-revisions
+    source: kalshi-fed-terms
+    field: special
+    value: first_release_only
+    text: "Revisions to the Underlying made after Expiration will not be accounted for in determining the Expiration Value."
+  - id: KFED-review
+    source: kalshi-fed-terms
+    field: special
+    value: venue_outcome_review
+    text: "Before Settlement, Kalshi may, at its sole discretion, initiate the Market Outcome Review Process pursuant to Rule 6.3(c) of the Rulebook."
+
+  # ---- Kalshi KXFEDFUNDSYEAR (year-end level, under the generic ECONSTAT terms) ---------------
+  - id: KECON-unclear
+    source: kalshi-econstat-terms
+    field: unclear_result
+    value: venue_discretion
+    text: "If an Expiration Value cannot be determined on the Expiration Date, Kalshi has the right to determine payouts pursuant to Rule 6.3(b) in the Rulebook."
+  - id: KECON-above
+    source: kalshi-econstat-terms
+    field: cutoff_op
+    text: "\"Above\" means greater than (>), \"below\" means less than (<), \"exactly\" means equal to (=) when rounded to two decimal places, \"at least\" means greater than or equal to (≥)"
+  - id: KECON-source
+    source: kalshi-econstat-terms
+    field: decider
+    text: "The Source Agencies are, in hierarchical order, the statistical agency or entity responsible for the calculation and release of <econ stat> (e.g. Bureau of Labor Statistics, Australian Bureau of Statistics, Bank of England), Trading Economics."
+  - id: KECON-first-release
+    source: kalshi-econstat-terms
+    field: special
+    value: first_release_only
+    text: "Unless explicitly stated otherwise, only the first non-preliminary release of the relevant <econ stat> will be used to resolve the market, and subsequent revisions will not affect resolution."
+  - id: KECON-delay
+    source: kalshi-econstat-terms
+    field: special
+    value: venue_may_move_expiration
+    text: "In the case where data is expected to be delayed and later released, the Exchange may, in its sole discretion, move the Expiration Date in line with Rule 7.2."
+
+  # ---- Polymarket US (every market) ------------------------------------------------------------
+  - id: PRB-unclear
+    source: polymarket-us-rulebook
+    field: unclear_result
+    value: venue_discretion
+    text: "In cases where the Contract Outcome cannot be determined, the Exchange may settle the Contract in accordance with the Contract Outcome Review Process set forth in Rule 10.4."
+  - id: PRB-final
+    source: polymarket-us-rulebook
+    field: special
+    value: venue_outcome_review
+    text: "The Company has full discretion in reviewing markets. Determinations made by the Company are final."
+  - id: PRB-expiry
+    source: polymarket-us-rulebook
+    field: special
+    value: venue_may_move_expiration
+    text: "If any circumstance arises that would prevent a Contract’s value from being determined accurately at the Expiration Date, including but not limited to the rescheduling or cancellation of a relevant event or delayed data from a relevant source, the Company may at its sole discretion adjust the Expiration Date."
+  - id: PRB-modify
+    source: polymarket-us-rulebook
+    field: special
+    value: venue_may_modify_terms
+    text: "If any event or circumstance that may have a material impact on the reliability or transparency of a Contract arises, the Company retains the discretion to modify associated Contract Specifications, including Settlement Date and Payout Condition at any time."

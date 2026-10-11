@@ -1,0 +1,9 @@
+anthropic>=0.112
+streamlit>=1.57
+pandas
+pydantic>=2
+pyyaml
+pytest
+# optional: langsmith (tracing when LANGSMITH_TRACING=true)
+requests
+pypdf

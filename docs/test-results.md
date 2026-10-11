@@ -65,3 +65,6 @@ Amendment tests
 | internal/watch | 9 |
 | scripts/acceptance | 2 |
 | scripts/guard | 2 |
+
+## Re-run 2026-10-11
+After the payoff-only match trigger (D-21, W1 updated), in golang:1.26 (Docker): `go vet ./...` clean, every package `ok`, `make guard` ok, `make acceptance` 20 of 20 required and 11 of 11 amendment. Proposal prototype: `python -m pytest` in prototype/, 41 passed (LLM stubbed; router parity against the synthetic demo's route records).

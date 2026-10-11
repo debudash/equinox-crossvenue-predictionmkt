@@ -1,0 +1,7 @@
+# Prototype look: dark base, one accent (the deck blue) on every control, matching the pills.
+[theme]
+base = "dark"
+primaryColor = "#2E5E8C"
+
+[browser]
+gatherUsageStats = false

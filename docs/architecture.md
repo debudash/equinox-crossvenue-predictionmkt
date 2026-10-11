@@ -366,6 +366,11 @@ sequenceDiagram
 
 Rules: the cache is built only from SQLite and only from completed cycles; it never calls a venue and never writes. Pages carry their cycle number so "Load more" finishes on the cycle the reader started with. The previous snapshot is kept for that reason.
 
+## Deployment and the proposal prototype
+One Docker image runs `watch` and `serve` over a SQLite file on a persistent volume, hosted on Railway (ADR-009). Since 2026-10-11 the hosted image also carries the proposal app: Caddy routes `/app` to it and everything else to the unchanged feed (docs/deployment.md).
+
+`prototype/` is added scope, outside the core: it opens `data/equinox.db` read-only and writes only its own `proposals.db`. An LLM reads each market's rules and the venues' versioned policy clauses into the seven payoff fields, quoting every value; deterministic rules name every difference; a person decides with a reason; approved pairs go through a port of `route.Decide`, checked against the core's own route records. Nothing in `cmd/` or `internal/` imports it, so the core stays deterministic with no model (ADR-006). See prototype/README.md.
+
 ## Key tradeoffs
 | Choice | Gained | Given up |
 |---|---|---|

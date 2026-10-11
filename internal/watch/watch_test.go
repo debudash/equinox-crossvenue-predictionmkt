@@ -126,11 +126,20 @@ func TestAmd_W1_MatchRunsOnlyAfterCardsChanged(t *testing.T) {
 	if n := len(r.records(t, card.MatchRecord)); n != first {
 		t.Errorf("unchanged cards must not re-run match: %d then %d records", first, n)
 	}
+	// A new version that changes only display data (title here; volume and url alike) cannot change a match
+	// result, because the matcher reads only payoff fields, so it must not re-run match (decision D-21).
 	r.ctr.cards[0].Record.Title = "renamed"
 	r.now = r.now.Add(30 * time.Minute)
 	r.w.Discovery(ctx)
+	if n := len(r.records(t, card.MatchRecord)); n != first {
+		t.Errorf("a display-only change must not re-run match: %d then %d records", first, n)
+	}
+	v, _ := card.ParseDecimal("4")
+	r.ctr.cards[0].Payoff.CutoffValue = card.Some(v)
+	r.now = r.now.Add(30 * time.Minute)
+	r.w.Discovery(ctx)
 	if n := len(r.records(t, card.MatchRecord)); n != 2*first {
-		t.Errorf("a changed card must re-run match: %d then %d records", first, n)
+		t.Errorf("a changed payoff field must re-run match: %d then %d records", first, n)
 	}
 }
 

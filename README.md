@@ -4,6 +4,8 @@ A feasibility simulation for PEAK6 Labs. It fetches Kalshi and Polymarket US mar
 
 Governing principle: precision over recall. When the system is not sure, it does not route, and it records why.
 
+**Demo video (2:29):** https://youtu.be/egQVWj9Dtno · **Live:** https://equinox-production-6620.up.railway.app
+
 ## Viability verdict
 Measured on 2026-10-10 (docs/metrics.md, docs/test-results.md, evals/match-audit.md).
 
@@ -20,6 +22,11 @@ Answers to the three questions:
 
 ## Live
 https://equinox-production-6620.up.railway.app (Railway, real Kalshi and Polymarket US Fed markets, refreshed by `watch`; read-only). Deployment notes: docs/deployment.md.
+
+The proposal app (core results, live feed, near-miss proposal and a guided test) is at https://equinox-production-6620.up.railway.app/app/ behind a sign-in (username `peak6`; the password is shared separately). Demo video (2:29): https://youtu.be/egQVWj9Dtno (scene list in Demo_Script.md).
+
+## Proposal prototype (added scope)
+The exact matcher is right to refuse, but on live data it finds none of the bets the venues write differently (Kalshi "above 3.75%" is Polymarket "4.00% or above" when rates move in 0.25 steps). `prototype/` is a proposal, outside the core and never imported by it: an LLM reads each market's rules and the venues' versioned policy clauses into the same seven fields, quoting every value; deterministic rules measure the differences (9 near misses of 10,054); a person decides with a reason; approved pairs go through a port of the core's router, checked against the core's own route records. Reviews feed a learning loop and an eval set; the human gate stays. The core keeps no language model (ADR-006). See prototype/README.md.
 
 ## Quickstart
 ```
@@ -94,6 +101,8 @@ Key choices: deadline is the moment the outcome is read (Kalshi KXFED event stri
 | Demo_Script.md | Timed demo |
 | TASKS.md, docs/tasks/, docs/status.md | Agent task board, specs, build log |
 | docs/ai-usage-log.md | AI usage disclosure |
+| prototype/ | Near-miss proposal (added scope, outside the core), its tests and the combined Railway image |
+| Demo_Script.md | Recorded video scene list and the live demo script |
 | Wireframes | See "Wireframes" below |
 
 ## Wireframes
@@ -109,4 +118,4 @@ What changed from the approved wireframes, and why: the filter bar has an Apply 
 Venues have absorbed normalization layers rather than adopting neutral ones. The party with the incentive to standardize equivalence is a neutral intermediary that routes across venues. The measured blocker here, the same economic question listed with different boundary wording, is exactly what a shared contract vocabulary would remove. docs/spec.md drafts the card model as an extension of the FINOS Common Domain Model that PEAK6 / Apex could sponsor (ADR-007).
 
 ## AI usage
-No AI in matching or routing (ADR-006). Development was AI-assisted; see docs/ai-usage-log.md.
+No AI in matching or routing (ADR-006). Development was AI-assisted; see docs/ai-usage-log.md. The added-scope proposal in prototype/ uses an LLM only to propose field readings, each quoted from the market's rules or a versioned venue-policy clause; deterministic rules and a person decide, and the core never imports it.

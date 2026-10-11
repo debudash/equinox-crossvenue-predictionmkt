@@ -1,0 +1,14 @@
+# One public domain, two apps: the combined app under /app, everything else to the Equinox feed (unchanged URLs).
+{
+	admin off
+	auto_https off
+}
+
+:{$PORT} {
+	handle /app* {
+		reverse_proxy 127.0.0.1:8501
+	}
+	handle {
+		reverse_proxy 127.0.0.1:8090
+	}
+}

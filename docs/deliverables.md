@@ -4,7 +4,8 @@
 |---|---|---|---|
 | Source code | repo | all | [x] |
 | Technical documentation | docs/architecture.md, docs/spec.md, docs/adr/, NORMALIZATION.md files | T-10, T-11, T-30 | [x] |
-| Demo video | link in README; Demo_Script.md | T-30 | [ ] |
+| Demo video | https://youtu.be/egQVWj9Dtno (2:29 walkthrough); scene list in Demo_Script.md | T-30 | [x] |
+| Proposal prototype (added scope) | prototype/, prototype/README.md, live at /app | proposal | [x] |
 | Test results | docs/test-results.md, docs/metrics.md | T-30 | [x] |
 | AI usage log | docs/ai-usage-log.md | all | [x] |
 | Deployment guide | README.md, docs/deployment.md | T-30 | [x] |
