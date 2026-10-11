@@ -11,8 +11,8 @@ Narrated walkthrough recorded from a local copy of the deployed build (same code
 | 0:20 | Internal representation | `card.Payoff`: seven fields decide the bet; record fields are display only |
 | 0:30 | Finding equivalent markets | `match.Compare`: exact equality, no score, no model; zero wrong bets at the cost of some missed ones |
 | 0:42 | The live result | 0 of 10,054 live pairs match; at exactly 4.00%, "above" and "or above" pay differently |
-| 0:57 | A simulated route, logged | Labelled synthetic pair: Polymarket 0.95 beats Kalshi 0.96; the append-only log with plain reasons |
-| 1:07 | Deterministic routing | `as_of` passed in, saved inputs, reference venue wins only exact ties (test 15); guard keeps venue names out of match and route |
+| 0:57 | A simulated route, logged | To show routing, run on synthetic data (labelled): Polymarket 0.95 beats Kalshi 0.96; the append-only log with plain reasons |
+| 1:07 | Deterministic routing | Smart routing can be done deterministically: `as_of` passed in, saved inputs, reference venue wins only exact ties (test 15); guard keeps venue names out of match and route |
 | 1:17 | The proposal | "above 3.75%" = "4.00% or above" in 0.25 steps; prototype outside the core |
 | 1:31 | Venue policy, the model reads | Nightly versioned policy snapshot; every value quoted word for word |
 | 1:43 | Rules measure, human decides, router routes | 9 near misses; a decision with a reason under policy 2026-10-11.1; Buy NO on Kalshi, logged once |
