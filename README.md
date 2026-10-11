@@ -4,7 +4,7 @@ A feasibility simulation for PEAK6 Labs. It fetches Kalshi and Polymarket US mar
 
 Governing principle: precision over recall. When the system is not sure, it does not route, and it records why.
 
-**Demo video (2:29):** https://youtu.be/egQVWj9Dtno · **Live:** https://equinox-production-6620.up.railway.app
+**Demo video (2:29):** https://youtu.be/d_mG81ZBPqE · **Live:** https://equinox-production-6620.up.railway.app
 
 ## Viability verdict
 Measured on 2026-10-10 (docs/metrics.md, docs/test-results.md, evals/match-audit.md).
@@ -23,7 +23,7 @@ Answers to the three questions:
 ## Live
 https://equinox-production-6620.up.railway.app (Railway, real Kalshi and Polymarket US Fed markets, refreshed by `watch`; read-only). Deployment notes: docs/deployment.md.
 
-The proposal app (core results, live feed, near-miss proposal and a guided test) is at https://equinox-production-6620.up.railway.app/app/ behind a sign-in (username `peak6`; the password is shared separately). Demo video (2:29): https://youtu.be/egQVWj9Dtno (scene list in Demo_Script.md).
+The proposal app (core results, live feed, near-miss proposal and a guided test) is at https://equinox-production-6620.up.railway.app/app/ behind a sign-in (username `peak6`; the password is shared separately). Demo video (2:29): https://youtu.be/d_mG81ZBPqE (scene list in Demo_Script.md).
 
 ## Proposal prototype (added scope)
 The exact matcher is right to refuse, but on live data it finds none of the bets the venues write differently (Kalshi "above 3.75%" is Polymarket "4.00% or above" when rates move in 0.25 steps). `prototype/` is a proposal, outside the core and never imported by it: an LLM reads each market's rules and the venues' versioned policy clauses into the same seven fields, quoting every value; deterministic rules measure the differences (9 near misses of 10,054); a person decides with a reason; approved pairs go through a port of the core's router, checked against the core's own route records. Reviews feed a learning loop and an eval set; the human gate stays. The core keeps no language model (ADR-006). See prototype/README.md.
