@@ -21,6 +21,11 @@ Answers to the three questions:
 ## Live
 https://equinox-production-6620.up.railway.app (Railway, real Kalshi and Polymarket US Fed markets, refreshed by `watch`; read-only). Deployment notes: docs/deployment.md.
 
+The proposal app (core results, live feed, near-miss proposal and a guided test) is at https://equinox-production-6620.up.railway.app/app/ behind a sign-in (username `peak6`; the password is shared separately). Demo video: a 2:25 walkthrough, scene list in Demo_Script.md.
+
+## Proposal prototype (added scope)
+The exact matcher is right to refuse, but on live data it finds none of the bets the venues write differently (Kalshi "above 3.75%" is Polymarket "4.00% or above" when rates move in 0.25 steps). `prototype/` is a proposal, outside the core and never imported by it: an LLM reads each market's rules and the venues' versioned policy clauses into the same seven fields, quoting every value; deterministic rules measure the differences (9 near misses of 10,054); a person decides with a reason; approved pairs go through a port of the core's router, checked against the core's own route records. Reviews feed a learning loop and an eval set; the human gate stays. The core keeps no language model (ADR-006). See prototype/README.md.
+
 ## Quickstart
 ```
 make setup && make test

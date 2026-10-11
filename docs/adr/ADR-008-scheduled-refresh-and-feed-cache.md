@@ -6,7 +6,7 @@ Status: Accepted (amendments A1 to A5). Requirements: FR-1, NFR-2, NFR-3.
 Running fetch, match and route by hand leaves the feed stale between runs, and prices go stale after 10 minutes. Scrolling should be fast. The feed must still write nothing and show only saved records.
 
 ## Decision
-- `equinox watch` runs a discovery loop and a price loop in one process that holds the run lock. Match runs only when cards changed. Route runs for a pair only when a needed price changed, with `as_of` set to the refresh time.
+- `equinox watch` runs a discovery loop and a price loop in one process that holds the run lock. Match runs only when a card is added or a payoff field changed (D-21); a display-only change such as 24h volume does not re-run it. Route runs for a pair only when a needed price changed, with `as_of` set to the refresh time.
 - Every poll saves a price record even when the price is unchanged, because freshness is judged by `priced_at`.
 - On a price change, route runs for both `yes` and `no`, so the feed covers both positions (A6).
 - `watch` and `serve` are separate processes with SQLite as the only handoff (A7).
