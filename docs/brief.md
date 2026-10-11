@@ -34,7 +34,7 @@ The code is evidence. The README verdict answers these from measured results onl
 |---|---|
 | Source code | repo |
 | Technical documentation | docs/architecture.md, docs/spec.md, docs/adr/, fetcher NORMALIZATION.md files |
-| Demo video | https://youtu.be/egQVWj9Dtno; scene list in Demo_Script.md |
+| Demo video | https://youtu.be/d_mG81ZBPqE; scene list in Demo_Script.md |
 | Proposal prototype (added scope) | prototype/README.md; live at /app |
 | Test results | `make acceptance` output in docs/test-results.md, docs/metrics.md |
 | AI usage log | docs/ai-usage-log.md |

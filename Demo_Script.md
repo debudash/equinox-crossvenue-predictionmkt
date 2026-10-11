@@ -2,18 +2,18 @@
 
 ## Recorded video (2:29, 2026-10-11)
 
-Watch: https://youtu.be/egQVWj9Dtno
+Watch: https://youtu.be/d_mG81ZBPqE
 
-Narrated walkthrough recorded from a local copy of the deployed build (same code and core data as Railway; the proposal app wrote to its own database, reset before the take). App footage is real; code and log panels are cut from the repo files and the synthetic demo's `decision_log`. Labels on screen: SYNTHETIC PAIR, SIMULATED (no orders), ADDED SCOPE (the proposal).
+Narrated walkthrough. The core scenes show Equinox's own Go feed (the live Railway feed, and the synthetic database served locally); the proposal scenes were recorded from a local copy of the deployed build (same code and core data as Railway; the proposal app wrote to its own database, reset before the take). App footage is real; code and log panels are cut from the repo files and the synthetic demo's `decision_log`. Labels on screen: SYNTHETIC PAIR, SIMULATED (no orders), ADDED SCOPE (the proposal).
 
 | Time | Scene | Shows |
 |---|---|---|
-| 0:00 | Equinox: the problem and three challenges | "This is Equinox." One Fed question at two prices (NO: 0.15 on Kalshi, 0.99 on Polymarket); one market language, never pay for the wrong bet, always the lower price |
+| 0:00 | Equinox: the problem and three challenges | "This is Equinox." over the live core feed; one Fed question at two prices (NO: 0.15 on Kalshi, 0.99 on Polymarket); one market language, never pay for the wrong bet, always the lower price |
 | 0:13 | How it was built | The agent build factory (requirements, AGENTS.md rules, task files in gated waves); work in progress |
 | 0:21 | Internal representation | `card.Payoff`: seven fields decide the bet; record fields are display only |
 | 0:31 | Finding equivalent markets | `match.Compare`: exact equality, no score, no model; zero wrong bets at the cost of some missed ones |
-| 0:43 | The live result | 0 of 10,054 live pairs match; at exactly 4.00%, "above" and "or above" pay differently |
-| 0:54 | A simulated route, logged | To show routing, run on synthetic data (labelled): Polymarket 0.95 beats Kalshi 0.96; the append-only log with plain reasons |
+| 0:43 | The live result | Core feed: 10054 pairs compared, 0 matched; a Polymarket Fed post's equinox-bot `not_same` reply (cutoff_op gt vs gte); at exactly 4.00%, "above" and "or above" pay differently |
+| 0:54 | A simulated route, logged | To show routing, run on synthetic data (labelled), in the core feed: Matched tab, "Same bet on Polymarket", the bot's `buy_on_polymarket` reply (0.95 vs 0.96) from the decision log |
 | 1:05 | Deterministic routing | Smart routing can be done deterministically: `as_of` passed in, saved inputs, reference venue wins only exact ties (test 15); guard keeps venue names out of match and route |
 | 1:18 | The proposal | "above 3.75%" = "4.00% or above" in 0.25 steps; prototype outside the core |
 | 1:32 | Venue policy, the model reads | Nightly versioned policy snapshot; every value quoted word for word |
