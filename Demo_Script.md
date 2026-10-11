@@ -1,22 +1,24 @@
 # Demo script
 
-## Recorded video (2:25, 2026-10-11)
+## Recorded video (2:29, 2026-10-11)
+
+Watch: https://youtu.be/egQVWj9Dtno
 
 Narrated walkthrough recorded from a local copy of the deployed build (same code and core data as Railway; the proposal app wrote to its own database, reset before the take). App footage is real; code and log panels are cut from the repo files and the synthetic demo's `decision_log`. Labels on screen: SYNTHETIC PAIR, SIMULATED (no orders), ADDED SCOPE (the proposal).
 
 | Time | Scene | Shows |
 |---|---|---|
 | 0:00 | Equinox: the problem and three challenges | "This is Equinox." One Fed question at two prices (NO: 0.15 on Kalshi, 0.99 on Polymarket); one market language, never pay for the wrong bet, always the lower price |
-| 0:12 | How it was built | The agent build factory (requirements, AGENTS.md rules, task files in gated waves); work in progress |
-| 0:20 | Internal representation | `card.Payoff`: seven fields decide the bet; record fields are display only |
-| 0:30 | Finding equivalent markets | `match.Compare`: exact equality, no score, no model; zero wrong bets at the cost of some missed ones |
-| 0:42 | The live result | 0 of 10,054 live pairs match; at exactly 4.00%, "above" and "or above" pay differently |
-| 0:57 | A simulated route, logged | To show routing, run on synthetic data (labelled): Polymarket 0.95 beats Kalshi 0.96; the append-only log with plain reasons |
-| 1:07 | Deterministic routing | Smart routing can be done deterministically: `as_of` passed in, saved inputs, reference venue wins only exact ties (test 15); guard keeps venue names out of match and route |
-| 1:17 | The proposal | "above 3.75%" = "4.00% or above" in 0.25 steps; prototype outside the core |
-| 1:31 | Venue policy, the model reads | Nightly versioned policy snapshot; every value quoted word for word |
+| 0:13 | How it was built | The agent build factory (requirements, AGENTS.md rules, task files in gated waves); work in progress |
+| 0:21 | Internal representation | `card.Payoff`: seven fields decide the bet; record fields are display only |
+| 0:31 | Finding equivalent markets | `match.Compare`: exact equality, no score, no model; zero wrong bets at the cost of some missed ones |
+| 0:43 | The live result | 0 of 10,054 live pairs match; at exactly 4.00%, "above" and "or above" pay differently |
+| 0:54 | A simulated route, logged | To show routing, run on synthetic data (labelled): Polymarket 0.95 beats Kalshi 0.96; the append-only log with plain reasons |
+| 1:05 | Deterministic routing | Smart routing can be done deterministically: `as_of` passed in, saved inputs, reference venue wins only exact ties (test 15); guard keeps venue names out of match and route |
+| 1:18 | The proposal | "above 3.75%" = "4.00% or above" in 0.25 steps; prototype outside the core |
+| 1:32 | Venue policy, the model reads | Nightly versioned policy snapshot; every value quoted word for word |
 | 1:43 | Rules measure, human decides, router routes | 9 near misses; a decision with a reason under policy 2026-10-11.1; Buy NO on Kalshi, logged once |
-| 1:51 | The learning loop | Each review becomes a few-shot example and an eval case; the human gate stays |
+| 1:52 | The learning loop | Each review becomes a few-shot example and an eval case; the human gate stays |
 | 2:01 | The answers and the business calls | Do we trust the quarter-point grid? Is venue discretion an acceptable risk? Should matching follow outcomes, not wording? Live URL |
 
 Code-quality evidence is tagged on screen as it appears: separation of concerns, documented assumptions (A-10, A-11), readable code, testing (tests 1-7, test 15, 20 of 20 and 11 of 11), no venue logic in routing (`make guard`).
