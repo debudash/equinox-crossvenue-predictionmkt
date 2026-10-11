@@ -78,30 +78,51 @@ func (w *Watcher) Discovery(ctx context.Context) error {
 			return err
 		}
 		if changed == 0 {
-			w.logf("discovery cycle %d: no card added or changed; match skipped", cycle)
+			w.logf("discovery cycle %d: no card added and no payoff field changed; match skipped", cycle)
 			return nil
 		}
 		sum, err := match.Run(ctx, w.St, cycle, w.Cfg)
 		if err != nil {
 			return err
 		}
-		w.logf("discovery cycle %d: %d card versions written; matched %d pairs (%d same, %d opposite)", cycle, changed, sum.Compared, sum.Same, sum.Opposite)
+		w.logf("discovery cycle %d: %d cards added or with changed payoff fields; matched %d pairs (%d same, %d opposite)", cycle, changed, sum.Compared, sum.Same, sum.Opposite)
 		return nil
 	})
 }
 
+// cardsChangedIn counts the cards this cycle added, or whose payoff fields
+// changed from the market's previous version. The matcher reads only payoff
+// fields (hard rule 1), so a version that changed only display data (title,
+// volume, url) cannot change any match result and does not trigger a match
+// (test W1, decision D-21).
 func (w *Watcher) cardsChangedIn(ctx context.Context, cycle int64) (int, error) {
 	vs, err := w.St.Cards.Versions(ctx)
 	if err != nil {
 		return 0, err
 	}
+	prev := map[card.MarketRef][]card.Field{}
 	n := 0
-	for _, v := range vs {
-		if v.CycleID == cycle {
+	for _, v := range vs { // ordered by id, so a market's earlier versions come first
+		ref, fields := v.Card.Ref(), v.Card.Payoff.Fields()
+		before, seen := prev[ref]
+		if v.CycleID == cycle && (!seen || !sameFields(before, fields)) {
 			n++
 		}
+		prev[ref] = fields
 	}
 	return n, nil
+}
+
+func sameFields(a, b []card.Field) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
 }
 
 // Prices refreshes prices for markets in same or opposite pairs only, saving a
